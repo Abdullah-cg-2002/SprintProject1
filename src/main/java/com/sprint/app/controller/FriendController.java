@@ -1,7 +1,7 @@
 package com.sprint.app.controller;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import com.sprint.app.model.Friends;
 import com.sprint.app.services.FriendService;
+import com.sprint.app.success.SuccessResponse;
+import com.sprint.app.success.SuccessResponseGet;
 import com.sprint.app.model.Messages;
 
 @RestController
@@ -25,9 +26,14 @@ public class FriendController {
 	private FriendService fs;
 	
 	@GetMapping("users/{userID}/friends")
-	public Set<Friends> getFrdsUsr(@PathVariable int userID)
+	public SuccessResponseGet getFrdsUsr(@PathVariable int userID)
 	{
-		return fs.getAllFrnds(userID);
+		SuccessResponseGet srg = new SuccessResponseGet();
+		List<Object> obj = new ArrayList<>();
+		obj.addAll(fs.getAllFrnds(userID));
+		srg.setStatus("success");
+		srg.setData(obj);
+		return srg;
 	}
 	
 	@GetMapping("friends/{friendshipID}/messages")
@@ -38,23 +44,39 @@ public class FriendController {
 	
 	@PostMapping("users/{userID}/friends/{friendID}")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void addFrnd(@PathVariable int userID, @PathVariable int friendID)
+	public SuccessResponse addFrnd(@PathVariable int userID, @PathVariable int friendID)
 	{
-		fs.addFrnd(userID, friendID);
+		String message = fs.addFrnd(userID, friendID);
+		SuccessResponse sr = new SuccessResponse();
+		sr.setStatus("sucess");
+		sr.setMessage(message);
+		
+		return sr;
+		
 	}
 	
 	@PostMapping("friends/{friendshipID}/message/send")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void sendMsg(@PathVariable int friendshipID, @RequestBody Messages msg)
+	public SuccessResponse sendMsg(@PathVariable int friendshipID, @RequestBody Messages msg)
 	{
-		fs.sendMsg(friendshipID, msg);
+		String message = fs.sendMsg(friendshipID, msg);
+		SuccessResponse sr = new SuccessResponse();
+		sr.setStatus("sucess");
+		sr.setMessage(message);
+		
+		return sr;
 	}
 	
 	@DeleteMapping("users/{userID}/friends/{friendID}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteFrd(@PathVariable int userID, @PathVariable int friendID)
+	public SuccessResponse deleteFrd(@PathVariable int userID, @PathVariable int friendID)
 	{
-		fs.deleteFrnd(userID, friendID);
+		String message = fs.deleteFrnd(userID, friendID);
+		SuccessResponse sr = new SuccessResponse();
+		sr.setStatus("sucess");
+		sr.setMessage(message);
+		
+		return sr;
 	}
 
 }
