@@ -27,8 +27,11 @@ public class Users {
 	@OneToMany(mappedBy = "user")
 	List<Posts> posts;
 	
+	@OneToMany(mappedBy= "user1")
+	Set<Friends> friendsent;
+	
 	@OneToMany(mappedBy = "user2")
-	Set<Friends> friends;
+	Set<Friends> friendsrec;
 	
 	@OneToMany(mappedBy = "users")
 	List<Comments> comments = new ArrayList<>();
@@ -92,12 +95,21 @@ public class Users {
 		this.posts = posts;
 	}
 
-	public Set<Friends> getFriends() {
-		return friends;
+	public Set<Friends> getFriendsent() {
+		return friendsent;
 	}
 
-	public void setFriends(Set<Friends> friends) {
-		this.friends = friends;
+	public void setFriendsent(Set<Friends> friendsent) {
+		this.friendsent = friendsent;
+	}
+	
+
+	public Set<Friends> getFriendsrec() {
+		return friendsrec;
+	}
+
+	public void setFriendsrec(Set<Friends> friendsrec) {
+		this.friendsrec = friendsrec;
 	}
 
 	public List<Comments> getComments() {
@@ -124,14 +136,6 @@ public class Users {
 		this.likes = likes;
 	}
 
-	public List<Messages> getMessages() {
-		return sentmsg;
-	}
-
-	public void setMessages(List<Messages> sentmsg) {
-		this.sentmsg = sentmsg;
-	}
-
 	public List<Groups> getGroups() {
 		return groups;
 	}
@@ -139,6 +143,7 @@ public class Users {
 	public void setGroups(List<Groups> groups) {
 		this.groups = groups;
 	}
+	
 	public List<Messages> getSentmsg() {
 		return sentmsg;
 	}

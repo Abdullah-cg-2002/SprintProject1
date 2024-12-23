@@ -67,7 +67,7 @@ public class Friends {
         else
         {
         	Friends friend = (Friends) o;
-            return (Objects.equals(user1, friend.user1) && Objects.equals(user2, friend.user2));
+            return ((user1.getUserID() == friend.getUser1().getUserID() && user2.getUserID() == friend.getUser2().getUserID()));
         }
 	}
 	
