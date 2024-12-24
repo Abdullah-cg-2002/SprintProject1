@@ -13,6 +13,7 @@ import com.sprint.app.repo.FriendsRepo;
 import com.sprint.app.repo.UserRepo;
 import com.sprint.app.services.FriendService;
 import com.sprint.app.services.MessageService;
+import com.sprint.app.dto.MessageDTO;
 import com.sprint.app.model.Friends;
 import com.sprint.app.model.Messages;
 import com.sprint.app.model.Status;
@@ -114,17 +115,17 @@ public class FriendServiceImpl implements FriendService
 	
 	
 	//send a msg to the frnd
-	public String sendMsg(int friendshipID, Messages msg)
+	public String sendMsg(int friendshipID, MessageDTO msgdto)
 	{
 		Optional<Friends> frdopt = fr.findById(friendshipID);
 		
 		if(frdopt.isPresent())
 		{
 			Friends frd = frdopt.get();
-			msg.setSender(frd.getUser1());
-			msg.setReceiver(frd.getUser2());
+			msgdto.setSender(frd.getUser1());
+			msgdto.setReceiver(frd.getUser2());
 			
-			ms.createMsg(msg);
+			ms.createMsg(msgdto);
 			return "Message Sent Successfully!";
 		}
 		else

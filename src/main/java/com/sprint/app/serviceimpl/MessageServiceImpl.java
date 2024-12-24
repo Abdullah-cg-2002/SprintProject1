@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sprint.app.dto.MessageDTO;
 import com.sprint.app.model.Messages;
 import com.sprint.app.model.Users;
 import com.sprint.app.repo.MessageRepo;
@@ -26,8 +27,12 @@ public class MessageServiceImpl implements MessageService
 	private UserRepo ur;
 	
 	//create a message
-	public void createMsg(Messages msg)
+	public void createMsg(MessageDTO msgdto)
 	{
+		Messages msg = new Messages();
+		msg.setMessage_text(msgdto.getMessage_text());
+		msg.setReceiver(msgdto.getReceiver());
+		msg.setSender(msgdto.getSender());
 		Optional<Users> sendopt = ur.findById(msg.getSender().getUserID());
 		Optional<Users> recopt = ur.findById(msg.getReceiver().getUserID());
 		
@@ -123,8 +128,8 @@ public class MessageServiceImpl implements MessageService
 			ur.save(sender);
 			mr.deleteById(messageID);
 		}
-		
-		throw new RuntimeException("messageid doesn't Exists");
+		else
+			throw new RuntimeException("messageid doesn't Exists");
 	}
 
 }

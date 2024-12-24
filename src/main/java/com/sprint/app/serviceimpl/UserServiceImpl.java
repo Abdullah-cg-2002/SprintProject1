@@ -15,6 +15,7 @@ import com.sprint.app.repo.UserRepo;
 import com.sprint.app.services.FriendService;
 import com.sprint.app.services.MessageService;
 import com.sprint.app.services.UserService;
+import com.sprint.app.dto.MessageDTO;
 
 @Service
 public class UserServiceImpl implements UserService
@@ -30,17 +31,20 @@ public class UserServiceImpl implements UserService
 	private FriendService fs;
 	
 	//send msg to the frnd
-	public void sendMsgFrnd(int userID, int frdID) {
+	public void sendMsgFrnd(int userID, int frdID, MessageDTO msgdto) {
 		Optional<Users> usropt = ur.findById(userID);
 		Optional<Users> frdopt = ur.findById(frdID);
 		
 		if(usropt.isPresent() && frdopt.isPresent())
 		{
-			Messages msg = new Messages();
-			msg.setMessage_text("Hello, How are you?");
-			msg.setReceiver(frdopt.get());
-			msg.setSender(usropt.get());
-			ms.createMsg(msg);
+			msgdto.setSender(usropt.get());
+			msgdto.setReceiver(frdopt.get());
+			ms.createMsg(msgdto);
+		}
+		
+		else
+		{
+			throw new RuntimeException("User or Friend not found");
 		}
 	}
 	
@@ -71,7 +75,7 @@ public class UserServiceImpl implements UserService
 		
 		else
 		{
-			return null;
+			throw new RuntimeException("User or Receiver not found");
 		}
 		
 		
@@ -94,7 +98,10 @@ public class UserServiceImpl implements UserService
 			return likes;
 		}
 		
-		return null;
+		else
+		{
+			throw new RuntimeException("User not found");
+		}
 	}
 	
 	//get all likes done by a user
@@ -107,7 +114,10 @@ public class UserServiceImpl implements UserService
 			return usropt.get().getLikes();
 		}
 		
-		return null;
+		else
+		{
+			throw new RuntimeException("User not found");
+		}
 	}
 	
 

@@ -50,11 +50,7 @@ public class MessageController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public SuccessResponse createMsg(@RequestBody MessageDTO msgdto)
 	{
-		Messages msg = new Messages();
-		msg.setMessage_text(msgdto.getMessage_text());
-		msg.setReceiver(msgdto.getReceiver());
-		msg.setSender(msgdto.getSender());
-		ms.createMsg(msg);
+		ms.createMsg(msgdto);
 		SuccessResponse sr = new SuccessResponse();
 		sr.setStatus("success");
 		sr.setMessage("message sent successfully");
@@ -74,7 +70,6 @@ public class MessageController {
 	}
 	
 	@DeleteMapping("messages/{messageID}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public SuccessResponse deleteMsg(@PathVariable int messageID)
 	{
 		ms.deleteMsg(messageID);

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sprint.app.services.FriendService;
 import com.sprint.app.success.SuccessResponse;
 import com.sprint.app.success.SuccessResponseGet;
+import com.sprint.app.dto.MessageDTO;
 import com.sprint.app.model.Messages;
 
 @RestController
@@ -57,9 +58,9 @@ public class FriendController {
 	
 	@PostMapping("friends/{friendshipID}/message/send")
 	@ResponseStatus(HttpStatus.CREATED)
-	public SuccessResponse sendMsg(@PathVariable int friendshipID, @RequestBody Messages msg)
+	public SuccessResponse sendMsg(@PathVariable int friendshipID, @RequestBody MessageDTO msgdto)
 	{
-		String message = fs.sendMsg(friendshipID, msg);
+		String message = fs.sendMsg(friendshipID, msgdto);
 		SuccessResponse sr = new SuccessResponse();
 		sr.setStatus("sucess");
 		sr.setMessage(message);
