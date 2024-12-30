@@ -51,6 +51,10 @@ public class Users {
 	@OneToMany(mappedBy = "admin")
 	List<Groups> groups = new ArrayList<>();
 
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
+
 	public int getUserID() {
 		return userID;
 	}

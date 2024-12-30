@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService
 	private FriendService fs;
 	
 	//send msg to the frnd
-	public void sendMsgFrnd(int userID, int frdID, MessageDTO msgdto) {
+	public String sendMsgFrnd(int userID, int frdID, MessageDTO msgdto) {
 		Optional<Users> usropt = ur.findById(userID);
 		Optional<Users> frdopt = ur.findById(frdID);
 		
@@ -40,6 +40,7 @@ public class UserServiceImpl implements UserService
 			msgdto.setSender(usropt.get());
 			msgdto.setReceiver(frdopt.get());
 			ms.createMsg(msgdto);
+			return "success";
 		}
 		
 		else
@@ -49,9 +50,9 @@ public class UserServiceImpl implements UserService
 	}
 	
 	//send a frnd request
-	public void sendFrdReq(int userID, int frdID)
+	public String sendFrdReq(int userID, int frdID)
 	{
-		fs.addFrnd(userID, frdID);
+		return fs.addFrnd(userID, frdID);
 	}
 	
 	//msg between 2 users

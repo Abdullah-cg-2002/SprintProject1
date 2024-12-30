@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sprint.app.dto.MessageDTO;
@@ -15,19 +14,25 @@ import com.sprint.app.model.Users;
 import com.sprint.app.repo.MessageRepo;
 import com.sprint.app.repo.UserRepo;
 import com.sprint.app.services.MessageService;
+import com.sprint.app.services.NotificationService;
 
 @Service
 public class MessageServiceImpl implements MessageService
 {
-	
-	@Autowired
+
 	private MessageRepo mr;
-	
-	@Autowired
 	private UserRepo ur;
+	private NotificationService ns;
+	
+	public MessageServiceImpl(MessageRepo mr, UserRepo ur, NotificationService ns)
+	{
+		this.mr = mr;
+		this.ur = ur;
+		this.ns = ns;
+	}
 	
 	//create a message
-	public void createMsg(MessageDTO msgdto)
+	public String createMsg(MessageDTO msgdto)
 	{
 		Messages msg = new Messages();
 		msg.setMessage_text(msgdto.getMessage_text());
@@ -43,11 +48,10 @@ public class MessageServiceImpl implements MessageService
 			msg.setTimestamp(LocalDateTime.now());
 			sender.getSentmsg().add(msg);
 			rec.getReceivedmsg().add(msg);
-			
-			ur.save(sender);
-			ur.save(rec);
 			mr.save(msg);
 			
+			ns.createNotif(rec.getUserID());
+			return "success";
 		}
 		
 		else
@@ -91,12 +95,12 @@ public class MessageServiceImpl implements MessageService
 		{
 			return msgopt.get();
 		}
-		
-		throw new RuntimeException("messageid doesn't Exists");
+		else
+			throw new RuntimeException("messageid doesn't Exists");
 	}
 	
 	//update message
-	public void updateMsg(int messageID, Messages msg)
+	public String updateMsg(int messageID, Messages msg)
 	{
 		Optional<Messages> msgopt = mr.findById(messageID);
 		
@@ -109,13 +113,17 @@ public class MessageServiceImpl implements MessageService
 				exmsg.setMessage_text(msg.getMessage_text());
 				exmsg.setTimestamp(LocalDateTime.now());
 				mr.save(exmsg);
+				return "success";
 			}
+			else
+				throw new RuntimeException("No changes given");
 		}
-		throw new RuntimeException("messageid doesn't Exists");
+		else
+			throw new RuntimeException("messageid doesn't Exists");
 	}
 	
 	//delete specific msg
-	public void deleteMsg(int messageID)
+	public String deleteMsg(int messageID)
 	{
 		Optional<Messages> msgopt = mr.findById(messageID);
 		
@@ -125,8 +133,9 @@ public class MessageServiceImpl implements MessageService
 			Users rec = msgopt.get().getReceiver();
 			sender.getSentmsg().remove(msgopt.get());
 			rec.getReceivedmsg().remove(msgopt.get());
-			ur.save(sender);
+//			ur.save(sender);
 			mr.deleteById(messageID);
+			return "success";
 		}
 		else
 			throw new RuntimeException("messageid doesn't Exists");

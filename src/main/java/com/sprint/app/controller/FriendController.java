@@ -17,7 +17,6 @@ import com.sprint.app.services.FriendService;
 import com.sprint.app.success.SuccessResponse;
 import com.sprint.app.success.SuccessResponseGet;
 import com.sprint.app.dto.MessageDTO;
-import com.sprint.app.model.Messages;
 
 @RestController
 @RequestMapping("/api/")
@@ -38,9 +37,15 @@ public class FriendController {
 	}
 	
 	@GetMapping("friends/{friendshipID}/messages")
-	public List<Messages> getMsgFrds(@PathVariable int friendshipID)
+	public SuccessResponseGet getMsgFrds(@PathVariable int friendshipID)
 	{
-		return fs.getAllMsgBtwFrnds(friendshipID);
+		SuccessResponseGet srg = new SuccessResponseGet();
+		List<Object> obj = new ArrayList<>();
+		obj.addAll(fs.getAllMsgBtwFrnds(friendshipID));
+		srg.setStatus("success");
+		srg.setData(obj);
+		
+		return srg;
 	}
 	
 	@PostMapping("users/{userID}/friends/{friendID}")
@@ -62,7 +67,7 @@ public class FriendController {
 	{
 		String message = fs.sendMsg(friendshipID, msgdto);
 		SuccessResponse sr = new SuccessResponse();
-		sr.setStatus("sucess");
+		sr.setStatus("success");
 		sr.setMessage(message);
 		
 		return sr;

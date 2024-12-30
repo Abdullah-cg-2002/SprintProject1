@@ -41,18 +41,23 @@ public class MessageController {
 	}
 	
 	@GetMapping("messages/{messageID}")
-	public Messages getSpecificMsg(@PathVariable int messageID)
+	public SuccessResponseGet getSpecificMsg(@PathVariable int messageID)
 	{
-		return ms.getSpecificMsg(messageID);
+		SuccessResponseGet srg = new SuccessResponseGet();
+		List<Object> obj = new ArrayList<>();
+		srg.setStatus("success");
+		obj.add(ms.getSpecificMsg(messageID));
+		srg.setData(obj);
+		
+		return srg;
 	}
 	
 	@PostMapping("messages")
 	@ResponseStatus(HttpStatus.CREATED)
 	public SuccessResponse createMsg(@RequestBody MessageDTO msgdto)
 	{
-		ms.createMsg(msgdto);
 		SuccessResponse sr = new SuccessResponse();
-		sr.setStatus("success");
+		sr.setStatus(ms.createMsg(msgdto));
 		sr.setMessage("message sent successfully");
 		
 		return sr;
@@ -61,10 +66,9 @@ public class MessageController {
 	@PutMapping("messages/{messageID}")
 	public SuccessResponse updateMsg(@PathVariable int messageID, @RequestBody Messages msg)
 	{
-		ms.updateMsg(messageID, msg);
 		SuccessResponse sr = new SuccessResponse();
+		sr.setStatus(ms.updateMsg(messageID, msg));
 		sr.setMessage("message updated successfully");
-		sr.setStatus("success");
 		
 		return sr;
 	}
@@ -72,10 +76,9 @@ public class MessageController {
 	@DeleteMapping("messages/{messageID}")
 	public SuccessResponse deleteMsg(@PathVariable int messageID)
 	{
-		ms.deleteMsg(messageID);
 		SuccessResponse sr = new SuccessResponse();
+		sr.setStatus(ms.deleteMsg(messageID));
 		sr.setMessage("message deleted successfully");
-		sr.setStatus("success");
 		
 		return sr;
 	}
