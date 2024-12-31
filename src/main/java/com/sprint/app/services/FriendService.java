@@ -13,5 +13,4 @@ public interface FriendService
 	public List<Messages> getAllMsgBtwFrnds(int friendshipID);
 	public String addFrnd(int userID, int frdID);
 	public String sendMsg(int friendshipID, MessageDTO msgdto);
-	public String deleteFrnd(int userID, int frdID);
 }

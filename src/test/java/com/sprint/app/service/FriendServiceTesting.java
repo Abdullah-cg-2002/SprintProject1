@@ -1,129 +1,79 @@
 package com.sprint.app.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.sprint.app.dto.MessageDTO;
-import com.sprint.app.model.Friends;
-import com.sprint.app.model.Messages;
-import com.sprint.app.model.Status;
-import com.sprint.app.model.Users;
-import com.sprint.app.repo.FriendsRepo;
-import com.sprint.app.repo.UserRepo;
 import com.sprint.app.serviceimpl.FriendServiceImpl;
-import com.sprint.app.services.MessageService;
 
-@ExtendWith(MockitoExtension.class)
+import jakarta.transaction.Transactional;
+
+
+@SpringBootTest
 public class FriendServiceTesting {
 	
-	@Mock
-	private FriendsRepo friendRepo;
-	
-	@Mock
-	private UserRepo userRepo;
-	
-	@Mock
-	private MessageService messageService;
-	
-	@InjectMocks
+	@Autowired
 	private FriendServiceImpl friendServiceImpl;
 	
-	private Users user;
-	private Users friend;
-	private MessageDTO messageDto;
-	private Friends frds;
-	private Messages message;
-	
-	@BeforeEach
-	void setup()
-	{
-		user = new Users();
-		friend = new Users();
-		
-		user.setUserID(1);
-		user.setUsername("sujit");
-		user.setEmail("sujit@cg.com");
-		user.setPassword("sujit@123");
-		user.setProfile_picture("sujitpicture");
-		
-		friend.setUserID(2);
-		friend.setUsername("nishaanth");
-		friend.setEmail("nishuu@cg.com");
-		friend.setPassword("nishuu@123");
-		friend.setProfile_picture("nishaanthpicture");
-		
-		messageDto = new MessageDTO();
-		messageDto.setMessage_text("Hi Nishaanth");
-		
-		message = new Messages();
-		message.setMessage_text("Hi Nishaanth");
-		message.setReceiver(friend);
-		message.setSender(user);
-		
-		frds = new Friends();
-		frds.setStatus(Status.ACCEPTED);
-		frds.setUser1(user);
-		frds.setUser2(friend);
-	}
-	
 	@Test
+	@Transactional
 	void testSendMsgToFrnd()
 	{
-		
-		
-		when(friendRepo.findById(10)).thenReturn(Optional.of(frds));
-		
-		String userResult = friendServiceImpl.sendMsg(10, messageDto);
-		assertEquals("Message Sent Successfully!", userResult);
-		verify(messageService).createMsg(messageDto);
+		MessageDTO messageDto = new MessageDTO();
+		messageDto.setMessage_text("Hello new Message");
+		assertEquals("Message Sent Successfully!", friendServiceImpl.sendMsg(100002, messageDto));
 	}
 	
 	@Test
 	void testSendMsgToFrnd_Exception()
 	{
-		when(friendRepo.findById(10)).thenReturn(Optional.empty());
 		
 		RuntimeException exception = assertThrows(RuntimeException.class, 
 														()->{
-															friendServiceImpl.sendMsg(10, messageDto);
+															friendServiceImpl.sendMsg(1, null);
 														});
 		assertEquals("FriendShip doesn't Exists", exception.getMessage());
 	}
 	
 	@Test
+	@Transactional
 	void testGetAllMsgsBtwnFrnds()
 	{
-		List<Messages> msgList = List.of(message);
-		when(friendRepo.findById(10)).thenReturn(Optional.of(frds));
-		when(messageService.getMsgSpecificUser(1)).thenReturn(msgList);
-		
-		List<Messages> result = friendServiceImpl.getAllMsgBtwFrnds(10);
-		assertTrue(result.contains(message));
+		assertFalse(friendServiceImpl.getAllMsgBtwFrnds(100003).isEmpty());
 	}
 	
 	@Test
 	void testGetAllMsgsBtwnFrnds_Exception()
 	{
-		when(friendRepo.findById(10)).thenReturn(Optional.empty());
 		
 		RuntimeException exception = assertThrows(RuntimeException.class, 
 														()->{
 															friendServiceImpl.getAllMsgBtwFrnds(10);
 														});
 		assertEquals("FriendShip doesn't exists", exception.getMessage());
+	}
+	
+	@Test
+	@Transactional
+	void testGetAllFrds()
+	{
+		assertNotNull(friendServiceImpl.getAllFrnds(1));
+	}
+	
+	@Test
+	void testGetAllFrds_Exception()
+	{
+		RuntimeException exception = assertThrows(RuntimeException.class, 
+				()->{
+					friendServiceImpl.getAllFrnds(0);
+				});
+		assertEquals("UserId not found", exception.getMessage());
 	}
 
 }

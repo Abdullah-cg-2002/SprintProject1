@@ -23,6 +23,7 @@ import com.sprint.app.model.Users;
 public class FriendServiceImpl implements FriendService
 {
 	
+	
 	@Autowired
 	private FriendsRepo fr;
 	
@@ -32,7 +33,10 @@ public class FriendServiceImpl implements FriendService
 	@Autowired
 	private MessageService ms;
 	
-	//get friends of a user
+	/**
+	 * @param userID
+	 * @return set of user for a user
+	 */
 	public Set<Friends> getAllFrnds(int userID)
 	{
 		Optional<Users> usropt = ur.findById(userID);
@@ -52,7 +56,10 @@ public class FriendServiceImpl implements FriendService
 		}
 	}
 	
-	//get all messages between frnds
+	/**
+	 * @param friendshipID
+	 * @return list of messages between friends
+	 */
 	public List<Messages> getAllMsgBtwFrnds(int friendshipID)
 	{
 		Optional<Friends> frdopt = fr.findById(friendshipID);
@@ -81,7 +88,11 @@ public class FriendServiceImpl implements FriendService
 		}
 	}
 	
-	//add a friend
+	/**
+	 * @param userID
+	 * @param frdID
+	 * @return success if friend request is sent to the friend
+	 */
 	public String addFrnd(int userID, int frdID)
 	{
 		Optional<Users> usropt = ur.findById(userID);
@@ -114,7 +125,11 @@ public class FriendServiceImpl implements FriendService
 	}
 	
 	
-	//send a msg to the frnd
+	/**
+	 * @param friendshipID
+	 * @param MessageDTO
+	 * @return success message if message sent
+	 */
 	public String sendMsg(int friendshipID, MessageDTO msgdto)
 	{
 		Optional<Friends> frdopt = fr.findById(friendshipID);
@@ -132,36 +147,6 @@ public class FriendServiceImpl implements FriendService
 		{
 			throw new RuntimeException("FriendShip doesn't Exists");
 		}
-	}
-	
-	//delete a frnd
-	public String deleteFrnd(int userID, int frdID)
-	{
-		Optional<Users> usropt = ur.findById(userID);
-		Optional<Users> frdopt = ur.findById(frdID);
-		
-		if(usropt.isPresent() && frdopt.isPresent())
-		{
-			Set<Friends> frds = usropt.get().getFriendsent();
-
-			
-			for(Friends f : frds)
-			{
-				if(f.getUser1().getUserID() == frdID || f.getUser2().getUserID() == frdID)
-				{
-					fr.deleteById(f.getFriendshipID());
-					return "Friend Removed Successfully!";
-				}
-			}
-			
-			throw new RuntimeException("FriendShip doesn't Exists");	
-			
-		}
-		else
-		{
-			throw new RuntimeException("UserId or FriendId doesn't exists");
-		}
-		
 	}
 
 }

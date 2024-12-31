@@ -30,7 +30,12 @@ public class UserServiceImpl implements UserService
 	@Autowired
 	private FriendService fs;
 	
-	//send msg to the frnd
+	/**
+	 * @param userID
+	 * @param frdID
+	 * @param MessageDTO
+	 * @return success if message sent to friend
+	 */
 	public String sendMsgFrnd(int userID, int frdID, MessageDTO msgdto) {
 		Optional<Users> usropt = ur.findById(userID);
 		Optional<Users> frdopt = ur.findById(frdID);
@@ -49,13 +54,22 @@ public class UserServiceImpl implements UserService
 		}
 	}
 	
-	//send a frnd request
+	/**
+	 * @param userID
+	 * @param frdID
+	 * @return success if friend request sent 
+	 */
+	
 	public String sendFrdReq(int userID, int frdID)
 	{
 		return fs.addFrnd(userID, frdID);
 	}
 	
-	//msg between 2 users
+	/**
+	 * @param userID
+	 * @param otherID
+	 * @return list of message between users
+	 */
 	public List<Messages> msgBtwUsers(int userID, int otherID)
 	{
 		Optional<Users> usropt = ur.findById(userID);
@@ -82,7 +96,10 @@ public class UserServiceImpl implements UserService
 		
 	}
 	
-	//get all likes get by user on all posts
+	/**
+	 * @param userID
+	 * @return list of likes user got
+	 */
 	public List<Likes> getAllLikesPst(int userID)
 	{
 		Optional<Users> usropt = ur.findById(userID);
@@ -105,7 +122,10 @@ public class UserServiceImpl implements UserService
 		}
 	}
 	
-	//get all likes done by a user
+	/**
+	 * @param userID
+	 * @return list of likes done by user
+	 */
 	public List<Likes> getAllLikesUsr(int userID)
 	{
 		Optional<Users> usropt = ur.findById(userID);

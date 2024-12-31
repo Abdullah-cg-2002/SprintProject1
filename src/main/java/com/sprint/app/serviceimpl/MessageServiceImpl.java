@@ -24,6 +24,7 @@ public class MessageServiceImpl implements MessageService
 	private UserRepo ur;
 	private NotificationService ns;
 	
+	
 	public MessageServiceImpl(MessageRepo mr, UserRepo ur, NotificationService ns)
 	{
 		this.mr = mr;
@@ -60,14 +61,18 @@ public class MessageServiceImpl implements MessageService
 		}
 	}
 	
-	//get all msgs
+	/**
+	 * @return list of all messages
+	 */
+	
 	public List<Messages> getAllMsgs()
 	{
 		return mr.findAll();
 	}
-	
-	
-	//get All messages of a user
+	/**
+	 * @param userID
+	 * @return "list of messages of user"
+	 */
 	public List<Messages> getMsgSpecificUser(int userID)
 	{
 		Optional<Users> usropt = ur.findById(userID);
@@ -86,7 +91,10 @@ public class MessageServiceImpl implements MessageService
 		}
 	}
 	
-	//get msg using id
+	/**
+	 * @param messageID
+	 * @return specific message 
+	 */
 	public Messages getSpecificMsg(int messageID)
 	{
 		Optional<Messages> msgopt = mr.findById(messageID);
@@ -99,7 +107,11 @@ public class MessageServiceImpl implements MessageService
 			throw new RuntimeException("messageid doesn't Exists");
 	}
 	
-	//update message
+	/**
+	 * @param messageID
+	 * @param Message
+	 * @return success if updated successfully
+	 */
 	public String updateMsg(int messageID, Messages msg)
 	{
 		Optional<Messages> msgopt = mr.findById(messageID);
@@ -122,7 +134,10 @@ public class MessageServiceImpl implements MessageService
 			throw new RuntimeException("messageid doesn't Exists");
 	}
 	
-	//delete specific msg
+	/**
+	 * @param messageID
+	 * @return success if deleted
+	 */
 	public String deleteMsg(int messageID)
 	{
 		Optional<Messages> msgopt = mr.findById(messageID);
