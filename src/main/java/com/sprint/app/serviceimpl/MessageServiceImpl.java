@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.sprint.app.dto.MessageDTO;
+import com.sprint.app.exception.MessageException;
 import com.sprint.app.model.Messages;
 import com.sprint.app.model.Users;
 import com.sprint.app.repo.MessageRepo;
@@ -57,7 +58,7 @@ public class MessageServiceImpl implements MessageService
 		
 		else
 		{
-			throw new RuntimeException("sender or reciever doesn't exists");
+			throw new MessageException("sender or reciever doesn't exists");
 		}
 	}
 	
@@ -87,7 +88,7 @@ public class MessageServiceImpl implements MessageService
 		}
 		else
 		{
-			throw new RuntimeException("UsersId doesn't exists");
+			throw new MessageException("UsersId doesn't exists");
 		}
 	}
 	
@@ -104,7 +105,7 @@ public class MessageServiceImpl implements MessageService
 			return msgopt.get();
 		}
 		else
-			throw new RuntimeException("messageid doesn't Exists");
+			throw new MessageException("messageid doesn't Exists");
 	}
 	
 	/**
@@ -128,10 +129,10 @@ public class MessageServiceImpl implements MessageService
 				return "success";
 			}
 			else
-				throw new RuntimeException("No changes given");
+				throw new MessageException("No changes given");
 		}
 		else
-			throw new RuntimeException("messageid doesn't Exists");
+			throw new MessageException("messageid doesn't Exists");
 	}
 	
 	/**
@@ -148,12 +149,11 @@ public class MessageServiceImpl implements MessageService
 			Users rec = msgopt.get().getReceiver();
 			sender.getSentmsg().remove(msgopt.get());
 			rec.getReceivedmsg().remove(msgopt.get());
-//			ur.save(sender);
 			mr.deleteById(messageID);
 			return "success";
 		}
 		else
-			throw new RuntimeException("messageid doesn't Exists");
+			throw new MessageException("messageid doesn't Exists");
 	}
 
 }

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Likes</title>
+</head>
+<body>
+    <h1>Likes</h1>
+    <div>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>LikesID</th>
+                    <th>User</th>
+                    <th>Post</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="likes : ${likes}">
+                	<td th:text="${likes.likesID}"></td>
+                    <td th:text="${likes.user.username}"></td>
+                    <td th:text="${likes.posts.content}"></td>
+                    <td th:text="${#temporals.format(likes.timestamp, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -14,6 +14,7 @@ import com.sprint.app.repo.UserRepo;
 import com.sprint.app.services.FriendService;
 import com.sprint.app.services.MessageService;
 import com.sprint.app.dto.MessageDTO;
+import com.sprint.app.exception.FriendException;
 import com.sprint.app.model.Friends;
 import com.sprint.app.model.Messages;
 import com.sprint.app.model.Status;
@@ -22,7 +23,6 @@ import com.sprint.app.model.Users;
 @Service
 public class FriendServiceImpl implements FriendService
 {
-	
 	
 	@Autowired
 	private FriendsRepo fr;
@@ -52,7 +52,7 @@ public class FriendServiceImpl implements FriendService
 		
 		else
 		{
-			throw new RuntimeException("UserId not found");
+			throw new FriendException("UserId not found");
 		}
 	}
 	
@@ -84,7 +84,7 @@ public class FriendServiceImpl implements FriendService
 		
 		else
 		{
-			throw new RuntimeException("FriendShip doesn't exists");
+			throw new FriendException("FriendShip doesn't exists");
 		}
 	}
 	
@@ -115,12 +115,12 @@ public class FriendServiceImpl implements FriendService
 			}
 				
 			else
-				throw new RuntimeException("FriendShip Already Exists");
+				throw new FriendException("FriendShip Already Exists");
 			
 		}
 		else
 		{
-			throw new RuntimeException("UserId or FriendId not found");
+			throw new FriendException("UserId or FriendId not found");
 		}
 	}
 	
@@ -145,7 +145,7 @@ public class FriendServiceImpl implements FriendService
 		}
 		else
 		{
-			throw new RuntimeException("FriendShip doesn't Exists");
+			throw new FriendException("FriendShip doesn't Exists");
 		}
 	}
 

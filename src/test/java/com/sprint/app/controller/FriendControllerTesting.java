@@ -3,11 +3,11 @@ package com.sprint.app.controller;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
+import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +32,9 @@ public class FriendControllerTesting {
 	
 	@MockitoBean
 	private FriendService friendService;
+	
+	@Autowired
+	private ObjectMapper objmap;
 	
 	
 	private Messages message;
@@ -62,21 +65,31 @@ public class FriendControllerTesting {
 	{
 		when(friendService.getAllMsgBtwFrnds(100001)).thenReturn(Arrays.asList(message));
 		mockMvc.perform(get("/api/friends/100001/messages"))
-				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.status").value("success"));
 	}
 	
 	@Test
-	void testSendMsgToFrnd() throws Exception
+	void testGetAllMsgsBtwnFrnds_Exception() throws Exception
 	{
-		when(friendService.sendMsg(100001, messageDto)).thenReturn("Message Sent Successfully!");
-		mockMvc.perform(post("/api/friends/100001/message/send")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(new ObjectMapper().writeValueAsString(messageDto)))
-				.andDo(print())
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.status").value("success"));
+		when(friendService.getAllMsgBtwFrnds(100001)).thenReturn(new ArrayList<>());
+		mockMvc.perform(get("/api/friends/100001/messages"))
+				.andExpect(status().isNotFound())
+				.andExpect(jsonPath("$.message").value("No messages shared between friends"));
+		
 	}
+	@Test
+	void testSendMsgToFrnd() throws Exception {
+		
+		String message = "message sent";
+	    when(friendService.sendMsg(100002, messageDto)).thenReturn(message);
+
+	    mockMvc.perform(post("/api/friends/100002/message/send")
+	                    .contentType(MediaType.APPLICATION_JSON)
+	                    .content(objmap.writeValueAsString(messageDto)))
+	            .andExpect(jsonPath("$.status").value("success"))
+	            .andExpect(jsonPath("$.message").value("message sent"));
+	}
+
 
 }

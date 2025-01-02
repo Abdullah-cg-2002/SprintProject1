@@ -9,10 +9,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -26,8 +26,6 @@ import com.sprint.app.dto.MessageDTO;
 import com.sprint.app.model.Messages;
 import com.sprint.app.model.Users;
 import com.sprint.app.services.MessageService;
-
-
 
 @AutoConfigureMockMvc
 @WebMvcTest(MessageRestController.class)
@@ -82,6 +80,15 @@ public class MessageControllerTesting {
 	}
 	
 	@Test
+	void testGetAllMsgs_Exception() throws Exception
+	{
+		when(messageService.getAllMsgs()).thenReturn(new ArrayList<>());
+		mockMvc.perform(get("/api/messages"))
+				.andExpect(status().isNotFound())
+				.andExpect(jsonPath("$.message").value("No Messages in database"));
+	}
+	
+	@Test
 	void testSpecificMsg() throws Exception
 	{
 		when(messageService.getSpecificMsg(1000002)).thenReturn(message);
@@ -92,6 +99,14 @@ public class MessageControllerTesting {
 	}
 	
 	@Test
+	void testSpecificMsg_Exception() throws Exception
+	{
+		when(messageService.getSpecificMsg(1000002)).thenReturn(null);
+		mockMvc.perform(get("/api/messages/1000002"))
+				.andExpect(status().isNotFound());
+	}
+	
+	@Test
 	void testCreateMsg() throws Exception
 	{
 		when(messageService.createMsg(messageDto)).thenReturn("success");
@@ -99,6 +114,7 @@ public class MessageControllerTesting {
 		mockMvc.perform(post("/api/messages")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objmap.writeValueAsString(messageDto)))
+				.andDo(print())
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.message").value("message sent successfully"));
 	}
@@ -110,6 +126,7 @@ public class MessageControllerTesting {
 		mockMvc.perform(put("/api/messages/1000009")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objmap.writeValueAsString(message)))
+				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.message").value("message updated successfully"));
 	}

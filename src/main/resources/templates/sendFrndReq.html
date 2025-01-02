@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Message Form</title>
+</head>
+<body>
+
+<h2>Send Friend Request</h2>
+
+<form th:action="@{/user/sent/friend-req}" method="post">
+    <div>
+        UserId : <input type="number" name="userID">
+    </div>
+    <div>
+        FriendId : <input type="number" name="frdID">
+    </div>
+    <div>
+        <button type="submit">Send Request</button>
+    </div>
+</form>
+
+
+</body>
+</html>

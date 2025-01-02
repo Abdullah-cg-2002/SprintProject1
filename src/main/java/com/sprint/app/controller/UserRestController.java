@@ -22,10 +22,13 @@ import com.sprint.app.success.SuccessResponseGet;
 import jakarta.validation.Valid;
 
 import com.sprint.app.dto.MessageDTO;
+import com.sprint.app.model.Likes;
+import com.sprint.app.model.Messages;
 
 @RestController
 @RequestMapping("/api/")
 public class UserRestController {
+	
 	
 	private static final Logger logger = LoggerFactory.getLogger(MessageRestController.class);
 	
@@ -79,15 +82,23 @@ public class UserRestController {
 	@GetMapping("users/{userID}/messages/{otherID}")
 	public SuccessResponseGet getMsgBetUsers(@PathVariable int userID, @PathVariable int otherID)
 	{
+		List<Messages> messages = us.msgBtwUsers(userID, otherID);
 		
+		if(!messages.isEmpty())
+		{
 		SuccessResponseGet srg = new SuccessResponseGet();
 		List<Object> list = new ArrayList<>();
 		logger.info("fetching all the message between users");
-		list.addAll(us.msgBtwUsers(userID, otherID));
+		list.addAll(messages);
 		srg.setStatus("success");
 		srg.setData(list);
 		logger.info("retrived {} messages", list.size());
 		return srg;
+		}
+		else
+		{
+			throw new RuntimeException("No messages exists between these 2 users");
+		}
 	}
 	
 	/**
@@ -98,14 +109,23 @@ public class UserRestController {
 	@GetMapping("users/{userID}/posts/likes")
 	public SuccessResponseGet getAllLikes(@PathVariable int userID)
 	{
+		List<Likes> likes = us.getAllLikesPst(userID);
+		
+		if(!likes.isEmpty())
+		{
 		SuccessResponseGet srg = new SuccessResponseGet();
 		List<Object> list = new ArrayList<>();
 		logger.info("retriving likes");
-		list.addAll(us.getAllLikesPst(userID));
+		list.addAll(likes);
 		srg.setStatus("success");
 		srg.setData(list);
 		logger.info("retrived {} likes", list.size());
 		return srg;
+		}
+		else
+		{
+			throw new RuntimeException("This user got no likes");
+		}
 	}
 	
 	/**
@@ -116,14 +136,23 @@ public class UserRestController {
 	@GetMapping("users/{userID}/likes")
 	public SuccessResponseGet getAllLikesByUser(@PathVariable int userID)
 	{
+		List<Likes> likes = us.getAllLikesUsr(userID);
+		
+		if(!likes.isEmpty())
+		{
 		SuccessResponseGet srg = new SuccessResponseGet();
 		List<Object> list = new ArrayList<>();
 		logger.info("fetching likes by the user");
-		list.addAll(us.getAllLikesUsr(userID));
+		list.addAll(likes);
 		srg.setStatus("success");
 		srg.setData(list);
 		logger.info("user likes {} posts", list.size());
 		return srg;
+		}
+		else
+		{
+			throw new RuntimeException("No posts were liked by this user");
+		}
 	}
 
 }

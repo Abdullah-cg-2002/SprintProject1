@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.sprint.app.dto.MessageDTO;
+import com.sprint.app.exception.MessageException;
 import com.sprint.app.model.Messages;
 import com.sprint.app.model.Users;
 import com.sprint.app.serviceimpl.MessageServiceImpl;
@@ -43,7 +44,7 @@ public class MessageServiceTesting {
 	{
 
 		
-		RuntimeException exception = assertThrows(RuntimeException.class, ()->{
+		RuntimeException exception = assertThrows(MessageException.class, ()->{
 			messageServiceImpl.getSpecificMsg(1);
 		});
 		
@@ -60,7 +61,7 @@ public class MessageServiceTesting {
 	@Test
 	void testGetMsgSpecificUser_Exception()
 	{	
-		RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+		RuntimeException exception = assertThrows(MessageException.class, () -> {
             messageServiceImpl.getMsgSpecificUser(200);
         });
 		
@@ -84,7 +85,6 @@ public class MessageServiceTesting {
 	}
 	
 	@Test
-	//@Disabled
 	void testCreateMsg_Exception()
 	{	
 		sender = new Users();
@@ -96,12 +96,12 @@ public class MessageServiceTesting {
 		messageDto.setMessage_text("new message for user 20");
 		messageDto.setReceiver(receiver);
 		messageDto.setSender(sender);
-		RuntimeException exception = assertThrows(RuntimeException.class,()->{ messageServiceImpl.createMsg(messageDto);});
+		RuntimeException exception = assertThrows(MessageException.class,()->{ messageServiceImpl.createMsg(messageDto);});
 		assertEquals("sender or reciever doesn't exists", exception.getMessage());	
 	}
 	
 	@Test
-	
+	@Transactional
 	void testUpdateMsg()
 	{
 		Messages message = new Messages();
@@ -112,7 +112,7 @@ public class MessageServiceTesting {
 	@Test
 	void testUpdateMsg_Exception()
 	{
-		RuntimeException exception = assertThrows(RuntimeException.class,()->{ messageServiceImpl.updateMsg(1, null);});
+		RuntimeException exception = assertThrows(MessageException.class,()->{ messageServiceImpl.updateMsg(1, null);});
 		assertEquals("messageid doesn't Exists", exception.getMessage());	
 	}
 	
@@ -127,7 +127,7 @@ public class MessageServiceTesting {
 	@Test
 	void testDeleteMsg_Exception()
 	{
-		RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+		RuntimeException exception = assertThrows(MessageException.class, () -> {
             messageServiceImpl.deleteMsg(1);
         });
 		

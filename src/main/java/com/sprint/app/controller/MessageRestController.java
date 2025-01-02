@@ -41,34 +41,50 @@ public class MessageRestController {
 	@GetMapping("messages")
 	public SuccessResponseGet getAllMsg()
 	{
+		List<Messages> messages = ms.getAllMsgs();
+		
+		if(!messages.isEmpty())
+		{
 		SuccessResponseGet srg = new SuccessResponseGet();
 		List<Object> obj = new ArrayList<>();
 		srg.setStatus("success");
 		logger.info("fetching all messages");
-		obj.addAll(ms.getAllMsgs());
+		obj.addAll(messages);
 		logger.info("retrived {} messages", obj.size());
 		srg.setData(obj);
-		
 		return srg;
+		}
+		else {
+			throw new RuntimeException("No Messages in database");
+		}
 	}
 	
 	/**
 	 * 
 	 * @param messageID
-	 * @return
+	 * @return successresponse with the specific message in data
 	 */
 	@GetMapping("messages/{messageID}")
 	public SuccessResponseGet getSpecificMsg(@PathVariable int messageID)
 	{
+		Messages message =  ms.getSpecificMsg(messageID);
+		
+		if(message!=null)
+		{
 		SuccessResponseGet srg = new SuccessResponseGet();
 		List<Object> obj = new ArrayList<>();
 		srg.setStatus("success");
 		logger.info("fetching specific message using messageid");
-		obj.add(ms.getSpecificMsg(messageID));
+		obj.add(message);
 		srg.setData(obj);
 		logger.info("retrived {} message",obj.size());
-		
 		return srg;
+		}
+		
+		else
+		{
+			throw new RuntimeException("No such message Exists");
+		}
 	}
 	
 	/**
@@ -80,9 +96,10 @@ public class MessageRestController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public SuccessResponse createMsg(@Valid @RequestBody MessageDTO msgdto)
 	{
+		ms.createMsg(msgdto);
 		SuccessResponse sr = new SuccessResponse();
 		logger.info("creating message");
-		sr.setStatus(ms.createMsg(msgdto));
+		sr.setStatus("success");
 		sr.setMessage("message sent successfully");
 		logger.info("message sent successfully");
 		return sr;
@@ -97,9 +114,10 @@ public class MessageRestController {
 	@PutMapping("messages/{messageID}")
 	public SuccessResponse updateMsg(@PathVariable int messageID,@Valid @RequestBody Messages msg)
 	{
+		ms.updateMsg(messageID, msg);
 		SuccessResponse sr = new SuccessResponse();
 		logger.info("updating message text");
-		sr.setStatus(ms.updateMsg(messageID, msg));
+		sr.setStatus("success");
 		sr.setMessage("message updated successfully");
 		logger.info("updated successfully");
 		return sr;
@@ -113,12 +131,12 @@ public class MessageRestController {
 	@DeleteMapping("messages/{messageID}")
 	public SuccessResponse deleteMsg(@PathVariable int messageID)
 	{
+		ms.deleteMsg(messageID);
 		SuccessResponse sr = new SuccessResponse();
 		logger.info("trying to delete the message using messageid");
-		sr.setStatus(ms.deleteMsg(messageID));
+		sr.setStatus("success");
 		sr.setMessage("message deleted successfully");
 		logger.info("message deleted successfully");
-		
 		return sr;
 	}
 

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.sprint.app.dto.MessageDTO;
+import com.sprint.app.exception.FriendException;
 import com.sprint.app.serviceimpl.FriendServiceImpl;
 
 import jakarta.transaction.Transactional;
@@ -34,7 +35,7 @@ public class FriendServiceTesting {
 	void testSendMsgToFrnd_Exception()
 	{
 		
-		RuntimeException exception = assertThrows(RuntimeException.class, 
+		RuntimeException exception = assertThrows(FriendException.class, 
 														()->{
 															friendServiceImpl.sendMsg(1, null);
 														});
@@ -52,7 +53,7 @@ public class FriendServiceTesting {
 	void testGetAllMsgsBtwnFrnds_Exception()
 	{
 		
-		RuntimeException exception = assertThrows(RuntimeException.class, 
+		RuntimeException exception = assertThrows(FriendException.class, 
 														()->{
 															friendServiceImpl.getAllMsgBtwFrnds(10);
 														});
@@ -69,7 +70,7 @@ public class FriendServiceTesting {
 	@Test
 	void testGetAllFrds_Exception()
 	{
-		RuntimeException exception = assertThrows(RuntimeException.class, 
+		RuntimeException exception = assertThrows(FriendException.class, 
 				()->{
 					friendServiceImpl.getAllFrnds(0);
 				});

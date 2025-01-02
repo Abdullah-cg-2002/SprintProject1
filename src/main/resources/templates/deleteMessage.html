@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Message Form</title>
+</head>
+<body>
+
+<h2>Delete Message</h2>
+
+<form th:action="@{/message/deleted}" th:object="${message}" method="post">
+    <div>
+        MessageId : <input type="number" name="messageID">
+    </div>
+    <div>
+        <button type="submit">Delete Message</button>
+    </div>
+</form>
+
+
+</body>
+</html>

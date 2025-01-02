@@ -19,7 +19,7 @@ public class NotificationServiceImpl implements NotificationService
 	private NotificationRepo nr;
 	@Autowired
 	private UserRepo ur;
-
+	
 	//create a notification
 	public void createNotif(int userID)
 	{

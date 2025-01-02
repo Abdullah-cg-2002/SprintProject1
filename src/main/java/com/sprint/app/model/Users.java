@@ -30,7 +30,6 @@ public class Users {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotBlank
     private int userID;
 
     /**
@@ -38,6 +37,7 @@ public class Users {
      * This must contain only alphabetic characters, numbers, and spaces.
      * Validated with a regular expression pattern.
      */
+    @NotBlank
     @Pattern(regexp = "^[A-Za-z1-9 ]+$", message = "Guest name must only contain alphabetic characters and numbers")
     private String username;
 
@@ -45,6 +45,7 @@ public class Users {
      * The email address of the user.
      * This is validated to ensure it is in the correct email format.
      */
+    @NotBlank
     @Email(message = "enter valid email id")
     private String email;
 
@@ -52,6 +53,7 @@ public class Users {
      * The password of the user.
      * This is stored as a string.
      */
+    @NotBlank
     private String password;
 
     /**

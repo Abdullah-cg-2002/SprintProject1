@@ -1,6 +1,5 @@
 package com.sprint.app.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -17,7 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sprint.app.services.FriendService;
 import com.sprint.app.success.SuccessResponse;
 import com.sprint.app.success.SuccessResponseGet;
+
+import jakarta.validation.Valid;
+
 import com.sprint.app.dto.MessageDTO;
+import com.sprint.app.model.Messages;
 
 @RestController
 @RequestMapping("/api/")
@@ -31,18 +34,24 @@ public class FriendRestController {
 	/**
 	 * 
 	 * @param friendshipID
-	 * @return
+	 * @return retrive all the message between friends
 	 */
 	@GetMapping("friends/{friendshipID}/messages")
 	public SuccessResponseGet getMsgFrds(@PathVariable int friendshipID)
 	{
-		SuccessResponseGet srg = new SuccessResponseGet();
-		List<Object> obj = new ArrayList<>();
-		obj.addAll(fs.getAllMsgBtwFrnds(friendshipID));
-		srg.setStatus("success");
-		srg.setData(obj);
-		
-		return srg;
+		List<Messages> messages = fs.getAllMsgBtwFrnds(friendshipID);
+		if(messages.isEmpty())
+		{
+			throw new RuntimeException("No messages shared between friends");
+		}
+		else
+		{
+			SuccessResponseGet srg = new SuccessResponseGet();
+			List<Object> obj = List.of(messages);
+			srg.setStatus("success");
+			srg.setData(obj);
+			return srg;
+		}
 	}
 	
 	/**
@@ -53,14 +62,14 @@ public class FriendRestController {
 	 */
 	@PostMapping("friends/{friendshipID}/message/send")
 	@ResponseStatus(HttpStatus.CREATED)
-	public SuccessResponse sendMsg(@PathVariable int friendshipID, @RequestBody MessageDTO msgdto)
+	public SuccessResponse sendMsg(@PathVariable int friendshipID, @Valid @RequestBody MessageDTO msgdto)
 	{
 		logger.info("sending message to a friend");
-		String message = fs.sendMsg(friendshipID, msgdto);
+		fs.sendMsg(friendshipID, msgdto);
 		SuccessResponse sr = new SuccessResponse();
 		sr.setStatus("success");
-		sr.setMessage(message);
-		logger.info(message);
+		sr.setMessage("message sent");
+		logger.info("message sent");
 		return sr;
 	}
 	

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.sprint.app.dto.MessageDTO;
+import com.sprint.app.exception.UserException;
 import com.sprint.app.model.Likes;
 import com.sprint.app.model.Messages;
 import com.sprint.app.serviceimpl.UserServiceImpl;
@@ -44,7 +45,7 @@ public class UsersServiceTesting {
 	void testSendMsgtoFrnd_Exception()
 	{
 		
-		RuntimeException exception = assertThrows(RuntimeException.class,
+		RuntimeException exception = assertThrows(UserException.class,
 													()->{
 													userServiceImpl.sendMsgFrnd(0, 2, messageDto);
 													});
@@ -63,7 +64,7 @@ public class UsersServiceTesting {
 	@Test
 	void testSendFrdReq_Exception()
 	{
-		RuntimeException exception = assertThrows(RuntimeException.class,
+		RuntimeException exception = assertThrows(UserException.class,
 				()->{
 				userServiceImpl.sendFrdReq(0, 0);
 				});
@@ -83,7 +84,7 @@ assertEquals("UserId or FriendId not found", exception.getMessage());
 	void testGetAllMsgsBtwnFrnds_Exception()
 	{
 		
-		RuntimeException exception = assertThrows(RuntimeException.class,
+		RuntimeException exception = assertThrows(UserException.class,
 													()->{
 													userServiceImpl.msgBtwUsers(1, 0);
 													});
@@ -102,7 +103,7 @@ assertEquals("UserId or FriendId not found", exception.getMessage());
 	@Test
 	void testGetAllLikes_Exception()
 	{
-		RuntimeException exception = assertThrows(RuntimeException.class,
+		RuntimeException exception = assertThrows(UserException.class,
 				()->{
 				userServiceImpl.getAllLikesPst(0);
 				});
@@ -120,7 +121,7 @@ assertEquals("UserId or FriendId not found", exception.getMessage());
 	@Test
 	void testGetAllLikesUser_Exception()
 	{
-		RuntimeException exception = assertThrows(RuntimeException.class,
+		RuntimeException exception = assertThrows(UserException.class,
 				()->{
 				userServiceImpl.getAllLikesUsr(0);
 				});

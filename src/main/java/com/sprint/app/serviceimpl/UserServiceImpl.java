@@ -16,11 +16,12 @@ import com.sprint.app.services.FriendService;
 import com.sprint.app.services.MessageService;
 import com.sprint.app.services.UserService;
 import com.sprint.app.dto.MessageDTO;
+import com.sprint.app.exception.UserException;
 
 @Service
 public class UserServiceImpl implements UserService
 {
-	
+
 	@Autowired
 	private UserRepo ur;
 	
@@ -50,7 +51,7 @@ public class UserServiceImpl implements UserService
 		
 		else
 		{
-			throw new RuntimeException("User or Friend not found");
+			throw new UserException("User or Friend not found");
 		}
 	}
 	
@@ -62,7 +63,12 @@ public class UserServiceImpl implements UserService
 	
 	public String sendFrdReq(int userID, int frdID)
 	{
-		return fs.addFrnd(userID, frdID);
+		Optional<Users> user = ur.findById(userID);
+		Optional<Users> frd = ur.findById(frdID);
+		if(user.isPresent() && frd.isPresent())
+			return fs.addFrnd(userID, frdID);
+		else
+			throw new UserException("UserId or FriendId not found");
 	}
 	
 	/**
@@ -90,7 +96,7 @@ public class UserServiceImpl implements UserService
 		
 		else
 		{
-			throw new RuntimeException("User or Receiver not found");
+			throw new UserException("User or Receiver not found");
 		}
 		
 		
@@ -118,7 +124,7 @@ public class UserServiceImpl implements UserService
 		
 		else
 		{
-			throw new RuntimeException("User not found");
+			throw new UserException("User not found");
 		}
 	}
 	
@@ -137,7 +143,7 @@ public class UserServiceImpl implements UserService
 		
 		else
 		{
-			throw new RuntimeException("User not found");
+			throw new UserException("User not found");
 		}
 	}
 	
