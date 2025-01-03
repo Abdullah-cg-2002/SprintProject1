@@ -41,4 +41,29 @@ public class FriendWebController {
         System.out.println(userID+" "+friendID);
         return "redirect:/friends/" + userID;
     }
+	
+	//get msgs between 2 friends
+	@GetMapping("/friends/{friendshipID}/messages")
+	public String getFrndsMsgs(@PathVariable int friendshipID, Model m)
+	{
+		List<Messages> messages = friendService.getAllMsgBtwFrnds(friendshipID);
+		m.addAttribute("messages", messages);
+		return "displayMessage";
+	}
+	
+	//post a message to a friend
+	@GetMapping("/friends/message/send")
+	public String sendMsgToFriend(Model m)
+	{
+		MessageDTO messageDto = new MessageDTO();
+		m.addAttribute("messageDto", messageDto);
+		return "sendMsgFriend";
+	}
+	
+	@PostMapping("/friends/message/sent")
+	public String sentMsgToFriend(@RequestParam int friendshipID, @ModelAttribute MessageDTO messageDto)
+	{
+		friendService.sendMsg(friendshipID, messageDto);
+		return "redirect:/friends/message/send";
+	}
 }

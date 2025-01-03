@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Message Form</title>
+</head>
+<body>
+
+<h2>Send Message</h2>
+
+<form th:action="@{/user/send/message/post}" th:object="${messageDto}" method="post">
+    <div>
+        UserId : <input type="number" name="userID">
+    </div>
+    <div>
+        FriendId : <input type="number" name="frdID">
+    </div>
+    <div>
+        <label for="message_text">Message Text:</label>
+        <textarea th:field="*{message_text}"></textarea>
+    </div>
+    <div>
+        <button type="submit">Send Message</button>
+    </div>
+</form>
+
+
+</body>
+</html>

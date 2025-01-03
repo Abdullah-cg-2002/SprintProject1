@@ -1,5 +1,12 @@
 package com.sprint.app.services;
 
+public interface NotificationService {
+	
+	public void createNotif(int userID);
+
+}
+package com.sprint.app.services;
+
 import java.util.*;
 
 import com.sprint.app.model.Notifications;

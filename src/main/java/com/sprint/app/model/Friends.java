@@ -14,26 +14,33 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 /**
- * Entity class representing a Friendship between two users.
+ * Represents a friendship relationship between two users.
+ * This entity defines the structure of a friendship, including the friendship ID,
+ * the status of the friendship, and the two users involved in the friendship.
+ * It is mapped to a database entity using JPA annotations.
  */
 @Entity
 public class Friends {
-
+    
     /**
-     * Unique identifier for the friendship.
+     * The unique identifier for the friendship.
+     * This is the primary key for the Friends entity.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int friendshipID;
 
     /**
-     * Status of the friendship.
+     * The status of the friendship.
+     * This is an enum that defines the state of the friendship (e.g., PENDING, ACCEPTED, REJECTED).
      */
     @Enumerated(EnumType.STRING)
     private Status status;
 
     /**
-     * First user involved in the friendship.
+     * The first user in the friendship.
+     * This is a many-to-one relationship with the Users entity.
+     * The user is referenced by the userID field.
      */
     @ManyToOne
     @JoinColumn(name = "userID1", referencedColumnName = "userID")
@@ -41,7 +48,9 @@ public class Friends {
     private Users user1;
 
     /**
-     * Second user involved in the friendship.
+     * The second user in the friendship.
+     * This is a many-to-one relationship with the Users entity.
+     * The user is referenced by the userID field.
      */
     @ManyToOne
     @JoinColumn(name = "userID2", referencedColumnName = "userID")
@@ -49,18 +58,9 @@ public class Friends {
     private Users user2;
 
     /**
-     * Sets the friendship ID.
-     * 
-     * @param friendshipID The unique identifier for the friendship.
-     */
-    public void setFriendshipID(int friendshipID) {
-        this.friendshipID = friendshipID;
-    }
-
-    /**
-     * Gets the friendship ID.
-     * 
-     * @return The unique identifier for the friendship.
+     * Gets the unique identifier of the friendship.
+     *
+     * @return the friendship ID.
      */
     public int getFriendshipID() {
         return friendshipID;
@@ -68,8 +68,8 @@ public class Friends {
 
     /**
      * Gets the status of the friendship.
-     * 
-     * @return The status of the friendship.
+     *
+     * @return the status of the friendship.
      */
     public Status getStatus() {
         return status;
@@ -77,68 +77,71 @@ public class Friends {
 
     /**
      * Sets the status of the friendship.
-     * 
-     * @param status The status of the friendship.
+     *
+     * @param status the status to set.
      */
     public void setStatus(Status status) {
         this.status = status;
     }
 
     /**
-     * Gets the first user in the friendship.
-     * 
-     * @return The first user.
+     * Gets the first user involved in the friendship.
+     *
+     * @return the first user.
      */
     public Users getUser1() {
         return user1;
     }
 
     /**
-     * Sets the first user in the friendship.
-     * 
-     * @param user1 The first user.
+     * Sets the first user involved in the friendship.
+     *
+     * @param user1 the first user to set.
      */
     public void setUser1(Users user1) {
         this.user1 = user1;
     }
 
     /**
-     * Gets the second user in the friendship.
-     * 
-     * @return The second user.
+     * Gets the second user involved in the friendship.
+     *
+     * @return the second user.
      */
     public Users getUser2() {
         return user2;
     }
 
     /**
-     * Sets the second user in the friendship.
-     * 
-     * @param user2 The second user.
+     * Sets the second user involved in the friendship.
+     *
+     * @param user2 the second user to set.
      */
     public void setUser2(Users user2) {
         this.user2 = user2;
     }
 
     /**
-     * Checks if two friendship objects are equal based on their users.
+     * Compares this friendship object with another object for equality.
+     * Two friendship objects are considered equal if they involve the same pair of users.
      * 
-     * @param o The object to compare with.
-     * @return true if the friendships involve the same users; false otherwise.
+     * @param o the object to compare this friendship with.
+     * @return true if the two friendships involve the same users, false otherwise.
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Friends)) return false;
-        Friends friend = (Friends) o;
-        return (user1.getUserID() == friend.getUser1().getUserID() &&
-                user2.getUserID() == friend.getUser2().getUserID());
+        else {
+            Friends friend = (Friends) o;
+            return (user1.getUserID() == friend.getUser1().getUserID() &&
+                    user2.getUserID() == friend.getUser2().getUserID());
+        }
     }
 
     /**
-     * Generates a hash code based on the user IDs.
+     * Generates a hash code for the friendship object.
+     * The hash code is generated based on the user IDs of the two users involved in the friendship.
      * 
-     * @return Hash code for the friendship.
+     * @return the hash code for the friendship object.
      */
     @Override
     public int hashCode() {

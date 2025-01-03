@@ -14,6 +14,8 @@ import com.sprint.app.model.Groups;
 import com.sprint.app.model.Users;
 import com.sprint.app.repo.UserRepo;
 import com.sprint.app.services.UserService;
+import com.sprint.app.dto.MessageDTO;
+import com.sprint.app.exception.UserException;
 
 /**
  * Service implementation for managing user-related operations.
@@ -26,13 +28,123 @@ public class UserServiceImpl implements UserService
 
 	@Autowired
 	private UserRepo ur;
+	
+	@Autowired
+	private MessageService ms;
+	
+	@Autowired
+	private FriendService fs;
+	
+	//send msg to the frnd
+	public void sendMsgFrnd(int userID, int frdID) {
+		Optional<Users> usropt = ur.findById(userID);
+		Optional<Users> frdopt = ur.findById(frdID);
+		
+		if(usropt.isPresent() && frdopt.isPresent())
+		{
+			msgdto.setSender(usropt.get());
+			msgdto.setReceiver(frdopt.get());
+			ms.createMsg(msgdto);
+			return "success";
+		}
+		
+		else
+		{
+			throw new UserException("User or Friend not found");
+		}
+	}
+	
+	/**
+	 * @param userID
+	 * @param frdID
+	 * @return success if friend request sent 
+	 */
+	
+	public String sendFrdReq(int userID, int frdID)
+	{
+		Optional<Users> user = ur.findById(userID);
+		Optional<Users> frd = ur.findById(frdID);
+		if(user.isPresent() && frd.isPresent())
+			return fs.addFrnd(userID, frdID);
+		else
+			throw new UserException("UserId or FriendId not found");
+	}
+	
+	/**
+	 * @param userID
+	 * @param otherID
+	 * @return list of message between users
+	 */
+	public List<Messages> msgBtwUsers(int userID, int otherID)
+	{
+		Optional<Users> usropt = ur.findById(userID);
+		Optional<Users> othopt = ur.findById(otherID);
+		
+		List<Messages> chats = new ArrayList<>();
+		
+		if(usropt.isPresent() && othopt.isPresent())
+		{
+			for(Messages mgs : ms.getMsgSpecificUser(userID))
+			{
+				if(mgs.getReceiver().getUserID() == otherID || mgs.getSender().getUserID() == otherID)
+					chats.add(mgs);
+			}
+			
+			return chats;
+		}
+		
+		else
+		{
+			throw new UserException("User or Receiver not found");
+		}
+		
+		
+	}
+	
+	//get all likes get by user on all posts
+	public List<Likes> getAllLikesPst(int userID)
+	{
+		Optional<Users> usropt = ur.findById(userID);
+		
+		if(usropt.isPresent())
+		{
+			List<Likes> likes = new ArrayList<>();
+			Users usr = usropt.get();
+			for(Posts pst : usr.getPosts())
+			{
+				likes.addAll(pst.getLikes());
+			}
+			
+			return likes;
+		}
+		
+		else
+		{
+			throw new UserException("User not found");
+		}
+	}
+	
+	//get all likes done by a user
+	public List<Likes> getAllLikesUsr(int userID)
+	{
+		Optional<Users> usropt = ur.findById(userID);
+		
+		if(usropt.isPresent())
+		{
+			return usropt.get().getLikes();
+		}
+		
+		else
+		{
+			throw new UserException("User not found");
+		}
+	}
 
 	/**
 	 * Retrieves all users from the repository.
 	 *
 	 * @return List of all users.
 	 */
-	@Override
 	public List<Users> getAllUsers() {
 		logger.info("Fetching all users");
 		return ur.findAll();
@@ -45,7 +157,7 @@ public class UserServiceImpl implements UserService
 	 * @return The user with the specified ID.
 	 * @throws RuntimeException if the user ID is not found.
 	 */
-	@Override
+
 	public Users getSpecificUser(int userID) {
 		logger.info("Fetching specific user");
 		Optional<Users> opt = ur.findById(userID);
@@ -68,7 +180,7 @@ public class UserServiceImpl implements UserService
 	 * @return List of users matching the given username.
 	 * @throws RuntimeException if no users with the username are found.
 	 */
-	@Override
+
 	public List<Users> searchForUserByName(String username) {
 		logger.info("Searching for user by username");
 		List<Users> lis = new ArrayList<>();
@@ -88,7 +200,7 @@ public class UserServiceImpl implements UserService
 	 * @param user The user object to be added.
 	 * @throws RuntimeException if the email or password format is invalid.
 	 */
-	@Override
+
 	public void addUser(Users user) {
 		logger.info("Adding a new user");
 		String regemail = "^[a-z0-9]{5,}@[a-z]{2,}+\\.[a-z]{2,}$";
@@ -122,7 +234,7 @@ public class UserServiceImpl implements UserService
 	 *
 	 * @param userID ID of the user to be deleted.
 	 */
-	@Override
+
 	public void deleteUser(int userID) {
 		logger.info("Deleting user");
 		Optional<Users> opt = ur.findById(userID);
@@ -146,7 +258,7 @@ public class UserServiceImpl implements UserService
 	 * @return List of groups associated with the user.
 	 * @throws RuntimeException if the user ID is not found.
 	 */
-	@Override
+
 	public List<Groups> getAllGroupsofUser(int userID) {
 		logger.info("Fetching all groups of user");
 		Optional<Users> opt = ur.findById(userID);
@@ -160,4 +272,6 @@ public class UserServiceImpl implements UserService
 			logger.error("User not found");
 			throw new UserException("User not found");
 	}
+	
+
 }

@@ -12,9 +12,19 @@ import com.sprint.app.exception.*;
 
 @ControllerAdvice
 public class ErrorHandler {
+
+	@ExceptionHandler
+	public ResponseEntity<ErrorResponse> handleUserException(UserException exe)
+	{
+		ErrorResponse err= new ErrorResponse();
+		err.setTimestamp(LocalDateTime.now());
+		err.setStatus(HttpStatus.NOT_FOUND);
+		err.setMessage(exe.getMessage());
+		return new ResponseEntity<ErrorResponse>(err,HttpStatus.NOT_FOUND);
+	}
 	
 	@ExceptionHandler
-	public ResponseEntity<ErrorResponse> handleException(UserException exe) 
+	public ResponseEntity<ErrorResponse> handleMessageException(MessageException exe)
 	{
 		ErrorResponse err = new ErrorResponse();
 		err.setTimestamp(LocalDateTime.now());
@@ -24,7 +34,17 @@ public class ErrorHandler {
 	}
 	
 	@ExceptionHandler
-	public ResponseEntity<ErrorResponse> handleException(NotificationException exe) 
+	public ResponseEntity<ErrorResponse> handleFriendException(FriendException exe)
+	{
+		ErrorResponse err= new ErrorResponse();
+		err.setTimestamp(LocalDateTime.now());
+		err.setStatus(HttpStatus.NOT_FOUND);
+		err.setMessage(exe.getMessage());
+		return new ResponseEntity<ErrorResponse>(err,HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler
+	public ResponseEntity<ErrorResponse> handleNotificationException(NotificationException exe) 
 	{
 		ErrorResponse err = new ErrorResponse();
 		err.setTimestamp(LocalDateTime.now());
@@ -34,12 +54,13 @@ public class ErrorHandler {
 	}
 	
 	@ExceptionHandler
-	public ResponseEntity<ErrorResponse> handleException(FriendException exe) 
+	public ResponseEntity<ErrorResponse> handleControllerException(RuntimeException exe)
 	{
-		ErrorResponse err = new ErrorResponse();
+		ErrorResponse err= new ErrorResponse();
 		err.setTimestamp(LocalDateTime.now());
 		err.setStatus(HttpStatus.NOT_FOUND);
 		err.setMessage(exe.getMessage());
 		return new ResponseEntity<ErrorResponse>(err,HttpStatus.NOT_FOUND);
 	}
+
 }
