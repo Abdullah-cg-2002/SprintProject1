@@ -13,6 +13,8 @@ import com.sprint.app.repo.FriendsRepo;
 import com.sprint.app.repo.UserRepo;
 import com.sprint.app.services.FriendService;
 import com.sprint.app.services.MessageService;
+import com.sprint.app.dto.MessageDTO;
+import com.sprint.app.exception.FriendException;
 import com.sprint.app.model.Friends;
 import com.sprint.app.model.Messages;
 import com.sprint.app.model.Status;
@@ -31,7 +33,10 @@ public class FriendServiceImpl implements FriendService
 	@Autowired
 	private MessageService ms;
 	
-	//get friends of a user
+	/**
+	 * @param userID
+	 * @return set of user for a user
+	 */
 	public Set<Friends> getAllFrnds(int userID)
 	{
 		Optional<Users> usropt = ur.findById(userID);
@@ -47,11 +52,14 @@ public class FriendServiceImpl implements FriendService
 		
 		else
 		{
-			throw new RuntimeException("UserId not found");
+			throw new FriendException("UserId not found");
 		}
 	}
 	
-	//get all messages between frnds
+	/**
+	 * @param friendshipID
+	 * @return list of messages between friends
+	 */
 	public List<Messages> getAllMsgBtwFrnds(int friendshipID)
 	{
 		Optional<Friends> frdopt = fr.findById(friendshipID);
@@ -76,11 +84,15 @@ public class FriendServiceImpl implements FriendService
 		
 		else
 		{
-			throw new RuntimeException("FriendShip doesn't exists");
+			throw new FriendException("FriendShip doesn't exists");
 		}
 	}
 	
-	//add a friend
+	/**
+	 * @param userID
+	 * @param frdID
+	 * @return success if friend request is sent to the friend
+	 */
 	public String addFrnd(int userID, int frdID)
 	{
 		Optional<Users> usropt = ur.findById(userID);
@@ -103,64 +115,38 @@ public class FriendServiceImpl implements FriendService
 			}
 				
 			else
-				throw new RuntimeException("FriendShip Already Exists");
+				throw new FriendException("FriendShip Already Exists");
 			
 		}
 		else
 		{
-			throw new RuntimeException("UserId or FriendId not found");
+			throw new FriendException("UserId or FriendId not found");
 		}
 	}
 	
 	
-	//send a msg to the frnd
-	public String sendMsg(int friendshipID, Messages msg)
+	/**
+	 * @param friendshipID
+	 * @param MessageDTO
+	 * @return success message if message sent
+	 */
+	public String sendMsg(int friendshipID, MessageDTO msgdto)
 	{
 		Optional<Friends> frdopt = fr.findById(friendshipID);
 		
 		if(frdopt.isPresent())
 		{
 			Friends frd = frdopt.get();
-			msg.setSender(frd.getUser1());
-			msg.setReceiver(frd.getUser2());
+			msgdto.setSender(frd.getUser1());
+			msgdto.setReceiver(frd.getUser2());
 			
-			ms.createMsg(msg);
+			ms.createMsg(msgdto);
 			return "Message Sent Successfully!";
 		}
 		else
 		{
-			throw new RuntimeException("FriendShip doesn't Exists");
+			throw new FriendException("FriendShip doesn't Exists");
 		}
-	}
-	
-	//delete a frnd
-	public String deleteFrnd(int userID, int frdID)
-	{
-		Optional<Users> usropt = ur.findById(userID);
-		Optional<Users> frdopt = ur.findById(frdID);
-		
-		if(usropt.isPresent() && frdopt.isPresent())
-		{
-			Set<Friends> frds = usropt.get().getFriendsent();
-
-			
-			for(Friends f : frds)
-			{
-				if(f.getUser1().getUserID() == frdID || f.getUser2().getUserID() == frdID)
-				{
-					fr.deleteById(f.getFriendshipID());
-					return "Friend Removed Successfully!";
-				}
-			}
-			
-			throw new RuntimeException("FriendShip doesn't Exists");	
-			
-		}
-		else
-		{
-			throw new RuntimeException("UserId or FriendId doesn't exists");
-		}
-		
 	}
 
 }

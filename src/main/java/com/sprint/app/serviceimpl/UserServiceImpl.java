@@ -15,11 +15,13 @@ import com.sprint.app.repo.UserRepo;
 import com.sprint.app.services.FriendService;
 import com.sprint.app.services.MessageService;
 import com.sprint.app.services.UserService;
+import com.sprint.app.dto.MessageDTO;
+import com.sprint.app.exception.UserException;
 
 @Service
 public class UserServiceImpl implements UserService
 {
-	
+
 	@Autowired
 	private UserRepo ur;
 	
@@ -29,28 +31,51 @@ public class UserServiceImpl implements UserService
 	@Autowired
 	private FriendService fs;
 	
-	//send msg to the frnd
-	public void sendMsgFrnd(int userID, int frdID) {
+	/**
+	 * @param userID
+	 * @param frdID
+	 * @param MessageDTO
+	 * @return success if message sent to friend
+	 */
+	public String sendMsgFrnd(int userID, int frdID, MessageDTO msgdto) {
 		Optional<Users> usropt = ur.findById(userID);
 		Optional<Users> frdopt = ur.findById(frdID);
 		
 		if(usropt.isPresent() && frdopt.isPresent())
 		{
-			Messages msg = new Messages();
-			msg.setMessage_text("Hello, How are you?");
-			msg.setReceiver(frdopt.get());
-			msg.setSender(usropt.get());
-			ms.createMsg(msg);
+			msgdto.setSender(usropt.get());
+			msgdto.setReceiver(frdopt.get());
+			ms.createMsg(msgdto);
+			return "success";
+		}
+		
+		else
+		{
+			throw new UserException("User or Friend not found");
 		}
 	}
 	
-	//send a frnd request
-	public void sendFrdReq(int userID, int frdID)
+	/**
+	 * @param userID
+	 * @param frdID
+	 * @return success if friend request sent 
+	 */
+	
+	public String sendFrdReq(int userID, int frdID)
 	{
-		fs.addFrnd(userID, frdID);
+		Optional<Users> user = ur.findById(userID);
+		Optional<Users> frd = ur.findById(frdID);
+		if(user.isPresent() && frd.isPresent())
+			return fs.addFrnd(userID, frdID);
+		else
+			throw new UserException("UserId or FriendId not found");
 	}
 	
-	//msg between 2 users
+	/**
+	 * @param userID
+	 * @param otherID
+	 * @return list of message between users
+	 */
 	public List<Messages> msgBtwUsers(int userID, int otherID)
 	{
 		Optional<Users> usropt = ur.findById(userID);
@@ -71,13 +96,16 @@ public class UserServiceImpl implements UserService
 		
 		else
 		{
-			return null;
+			throw new UserException("User or Receiver not found");
 		}
 		
 		
 	}
 	
-	//get all likes get by user on all posts
+	/**
+	 * @param userID
+	 * @return list of likes user got
+	 */
 	public List<Likes> getAllLikesPst(int userID)
 	{
 		Optional<Users> usropt = ur.findById(userID);
@@ -94,10 +122,16 @@ public class UserServiceImpl implements UserService
 			return likes;
 		}
 		
-		return null;
+		else
+		{
+			throw new UserException("User not found");
+		}
 	}
 	
-	//get all likes done by a user
+	/**
+	 * @param userID
+	 * @return list of likes done by user
+	 */
 	public List<Likes> getAllLikesUsr(int userID)
 	{
 		Optional<Users> usropt = ur.findById(userID);
@@ -107,7 +141,10 @@ public class UserServiceImpl implements UserService
 			return usropt.get().getLikes();
 		}
 		
-		return null;
+		else
+		{
+			throw new UserException("User not found");
+		}
 	}
 	
 

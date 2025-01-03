@@ -28,6 +28,12 @@ public class Likes {
 	@JoinColumn(name="postID")
 	@JsonIgnore
 	private Posts posts;
+	
+	
+
+	public void setLikesID(int likesID) {
+		this.likesID = likesID;
+	}
 
 	public int getLikesID() {
 		return likesID;
