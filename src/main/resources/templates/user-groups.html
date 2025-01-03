@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Groups</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 th:text="${username} + ' Groups'"></h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Group ID</th>
+                    <th>Group Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="group : ${groups}">
+                    <td th:text="${group.groupID}"></td>
+                    <td th:text="${group.groupName}"></td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="/users" class="btn">Back to Users</a>
+    </div>
+</body>
+</html>
