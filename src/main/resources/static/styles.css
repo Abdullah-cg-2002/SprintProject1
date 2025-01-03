@@ -1,21 +1,30 @@
 /* General Body Styling */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f9;
+    background-color: #f0f8ff;
+    color: #444;
 }
 
 /* Container */
 .container {
     width: 90%;
+    max-width: 1200px;
     margin: 20px auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
 }
 
 /* Headings */
 h1 {
     text-align: center;
-    color: #333;
+    color: #3a7ca5;
+    font-size: 3em;
+    margin-bottom: 20px;
+    font-weight: 700;
 }
 
 /* Table */
@@ -23,45 +32,59 @@ h1 {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 .table th, .table td {
-    padding: 10px;
+    padding: 16px;
     border: 1px solid #ddd;
     text-align: center;
 }
 
 .table th {
-    background-color: #007BFF;
+    background-color: #3a7ca5;
     color: white;
+    font-weight: bold;
+}
+
+.table tr:nth-child(even) {
+    background-color: #f0f8ff;
+}
+
+.table tr:hover {
+    background-color: #e1effa;
 }
 
 /* Links and Buttons */
 a, button {
     text-decoration: none;
-    padding: 8px 12px;
+    padding: 12px 20px;
     margin: 5px;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 a {
-    color: #007BFF;
+    color: #3a7ca5;
 }
 
 a:hover {
-    color: #0056b3;
+    color: #285f82;
     text-decoration: underline;
 }
 
 button {
-    background-color: #007BFF;
+    background-color: #3a7ca5;
     color: white;
     border: none;
+    font-size: 16px;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #285f82;
 }
 
 /* Forms */
@@ -72,39 +95,65 @@ button:hover {
 }
 
 .search-form input {
-    padding: 8px;
-    width: 200px;
-    margin-right: 10px;
+    padding: 10px;
+    width: 280px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
 }
 
 .search-form button {
-    padding: 8px 15px;
+    padding: 12px 20px;
+    font-size: 16px;
 }
 
 /* User Details */
 .details p {
-    font-size: 16px;
+    font-size: 18px;
     margin: 10px 0;
 }
 
 /* Profile Picture */
 .profile-pic {
-    width: 150px;
-    height: 150px;
+    width: 160px;
+    height: 160px;
     border-radius: 50%;
-    border: 2px solid #007BFF;
+    border: 5px solid #3a7ca5;
+    object-fit: cover;
 }
 
 /* Buttons */
 .btn {
     display: inline-block;
-    padding: 10px 15px;
-    background-color: #007BFF;
+    padding: 14px 22px;
+    background-color: #3a7ca5;
     color: white;
-    border-radius: 5px;
+    border-radius: 10px;
     text-align: center;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
 
 .btn:hover {
-    background-color: #0056b3;
+    background-color: #285f82;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    .table th, .table td {
+        padding: 12px;
+    }
+
+    .search-form input {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .search-form {
+        flex-direction: column;
+        align-items: center;
+    }
 }
