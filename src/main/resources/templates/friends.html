@@ -1,0 +1,44 @@
+<!-- friends-list.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Friends List</title>
+</head>
+<body>
+    <h1>Friends of User <span th:text="${userID}"></span></h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Friendship ID</th>
+                <th>Friend 1 ID</th>
+                <th>Friend 2 ID</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="friend : ${friends}">
+                <td th:text="${friend.friendshipID}"></td>
+                <td th:text="${friend.user1.userID}"></td>
+                <td th:text="${friend.user2.userID}"></td>
+                <td th:text="${friend.status}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Add Friend</h2>
+    <form th:action="@{/friends/{userID}/add(userID=${userID})}" method="post">
+        <label for="friendID">Friend ID:</label>
+        <input type="number" id="friendID" name="friendID" required>
+        <button type="submit">Add Friend</button>
+    </form>
+
+    <h2>Delete Friend</h2>
+    <form th:action="@{/friends/{userID}/delete(userID=${userID})}" method="post">
+        <label for="deleteFriendID">Friend ID:</label>
+        <input type="number" id="deleteFriendID" name="friendID" required>
+        <button type="submit">Delete Friend</button>
+    </form>
+
+</body>
+</html>

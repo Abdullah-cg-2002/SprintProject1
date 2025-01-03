@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Details</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>User Details</h1>
+        <div class="details">
+            <p><strong>ID:</strong> <span th:text="${user.userID}"></span></p>
+            <p><strong>Username:</strong> <span th:text="${user.username}"></span></p>
+            <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+            <p><strong>Profile Picture:</strong></p>
+            <img th:src="${user.profile_picture}" alt="Profile Picture" class="profile-pic">
+        </div>
+        <a href="/users" class="btn">Back to Users</a>
+    </div>
+</body>
+</html>
