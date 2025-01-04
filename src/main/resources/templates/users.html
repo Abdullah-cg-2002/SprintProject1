@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>All Users</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>All Users</h1>
+        <a href="/users/add">Add New User</a>
+        <form action="/users/search" method="get" class="search-form">
+            <input type="text" name="username" placeholder="Search by Username" required>
+            <button type="submit">Search</button>
+        </form>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.userID}"></td>
+                    <td th:text="${user.username}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td>
+                        <a th:href="@{/users/{userID}(userID=${user.userID})}">View</a>
+                        <a th:href="@{/users/{userID}/groups(userID=${user.userID})}">Groups</a>
+                        <a th:href="@{/users/delete/{userID}(userID=${user.userID})}" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Message Form</title>
+</head>
+<body>
+
+<h2>Submit Message</h2>
+
+<form action="#" th:action="@{/message/sent}" th:object="${message}" method="post">
+    <!-- Message Text -->
+    <div>
+        <label for="message_text">Message Text:</label>
+        <textarea id="message_text" th:field="*{message_text}" rows="4" cols="50"></textarea>
+    </div>
+
+    <!-- Sender ID -->
+    <div>
+        <label for="senderId">Sender ID:</label>
+        <input type="number" id="senderId" th:field="*{sender.userID}" />
+    </div>
+
+    <!-- Receiver ID -->
+    <div>
+        <label for="receiverId">Receiver ID:</label>
+        <input type="number" id="receiverId" th:field="*{receiver.userID}" />
+    </div>
+
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+</form>
+
+</body>
+</html>

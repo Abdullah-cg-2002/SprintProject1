@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Message Form</title>
+</head>
+<body>
+
+<h2>Update Message</h2>
+
+<form th:action="@{/message/updated}" th:object="${message}" method="post">
+    <div>
+        MessageId : <input type="number" name="messageID">
+    </div>
+    <div>
+        <label for="message_text">Message Text:</label>
+        <textarea th:field="*{message_text}"></textarea>
+    </div>
+    <div>
+        <button type="submit">Update Message</button>
+    </div>
+</form>
+
+
+</body>
+</html>
