@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Post</title>
+        <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+
+</head>
+<body>
+    <h1>Add New Post</h1>
+    
+    <!-- Form to add a new post -->
+    <form th:action="@{/views/post/added}" th:object="${post}" method="post">
+        <label for="content">Content:</label><br>
+        <textarea id="content" th:field="*{content}" rows="4" cols="50" placeholder="Enter post content" required></textarea><br><br>
+        <label for="content">UserID:</label><br>
+        <input id="userid" name="userID" type="number"/>
+        <button type="submit">Create a new post</button>
+
+    </form>
+    
+    <!-- Link to return to the list of posts -->
+    <p><a href="@{/views/posts}">Back to Posts List</a></p>
+</body>
+</html>

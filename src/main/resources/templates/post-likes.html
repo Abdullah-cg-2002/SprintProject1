@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Likes for Post</title>
+        <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+
+</head>
+<body>
+    <h1>Likes for Post</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Like ID</th>
+                <th>User ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="like : ${likes}">
+                <td th:text="${like.likesID}"></td>
+                <td th:text="${like.user.userID}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <a th:href="@{views/posts}">Back to All Posts</a>
+</body>
+</html>

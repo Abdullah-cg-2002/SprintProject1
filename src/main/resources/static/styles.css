@@ -1,0 +1,207 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #F2F2F2; /* Light gray background like Instagram */
+    color: #333;
+    padding: 20px;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* Heading Styling (Instagram Style) */
+h1 {
+    text-align: center;
+    font-size: 3.5em;
+    color: #262626; /* Instagram Dark Text Color */
+    margin-bottom: 30px;
+    text-transform: capitalize;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Button Styling */
+div {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+button {
+    background-color: #3897f0;  /* Instagram blue */
+    color: white;
+    border: none;
+    padding: 18px 36px;
+    font-size: 1.4em;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+    background-color: #0088cc;  /* Darker Instagram blue */
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+button:active {
+    background-color: #007bb5;  /* Deep Instagram blue on click */
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+/* Table Styling (Pinterest Style) */
+table {
+    width: 100%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background-color: #FFF;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 40px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Table Headers */
+th {
+    padding: 14px;
+    text-align: left;
+    background-color: #E60023;  /* Pinterest Red */
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Table Cells */
+td {
+    padding: 14px;
+    text-align: left;
+    font-size: 1em;
+    color: #666;
+}
+
+tr:nth-child(even) {
+    background-color: #F9F9F9;
+}
+
+tr:hover {
+    background-color: #EFEFEF;
+}
+
+tr td {
+    border-top: 1px solid #e1e1e1;
+}
+
+table th, table td {
+    border-bottom: 1px solid #e1e1e1;
+}
+
+/* Action Links Styling */
+a {
+    color: #3897f0;  /* Instagram Blue */
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 8px;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #0088cc;  /* Darker blue for Instagram hover */
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    /* Stack table header and body */
+    table, thead, tbody, th, td, tr {
+        display: block;
+        width: 100%;
+    }
+
+    th {
+        background-color: #E60023;  /* Pinterest red */
+        text-align: center;
+        padding: 10px;
+        font-size: 1em;
+        color: #fff;
+    }
+
+    td {
+        display: block;
+        padding: 10px;
+        font-size: 0.95em;
+        border: none;
+        color: #555;
+    }
+
+    td a {
+        display: block;
+        margin: 8px 0;
+    }
+
+    button {
+        width: 100%;
+        padding: 14px;
+        font-size: 1.3em;
+    }
+}
+
+/* Card-like Section Styling for Emphasis (Pinterest Style) */
+.card {
+    background-color: #FFF;
+    padding: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    margin: 20px 0;
+    border: 1px solid #E6E6E6;
+}
+
+/* Gradient Backgrounds for Special Sections (Pinterest/Instagram Style) */
+.gradient-bg {
+    background: linear-gradient(135deg, rgba(255, 90, 95, 0.8), rgba(0, 153, 255, 0.8)); /* Instagram-like gradient */
+    padding: 40px;
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+}
+
+.gradient-bg h1 {
+    font-size: 2.8em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Footer Styling (Pinterest/Instagram Style) */
+footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 0.9em;
+    color: #fff;
+    padding: 15px;
+    background-color: #333; /* Instagram dark footer */
+}
+
+/* Additional Styling for Forms or Inputs */
+input[type="text"], input[type="email"], textarea {
+    border: 1px solid #D4E6F1;
+    padding: 12px;
+    border-radius: 6px;
+    width: 100%;
+    background-color: #FFF;
+    font-size: 1em;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+    border-color: #3897f0; /* Instagram Blue */
+    outline: none;
+}

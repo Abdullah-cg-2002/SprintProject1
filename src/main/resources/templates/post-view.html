@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Post Details</title>
+        <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+
+</head>
+<body>
+    <h1>Post Details</h1>
+    <div>
+        <h2 th:text="${post.content}"></h2>
+        <p>Posted on: <span th:text="${post.timestamp}"></span></p>
+        <h3>Likes</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Like ID</th>
+                    <th>User ID</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="like : ${post.likes}">
+                    <td th:text="${like.likesID}"></td>
+                    <td th:text="${like.user.userID}"></td>
+                    <td>
+                        <a th:href="@{/views/post/{postId}/like/remove/{likesId}(postId=${post.postID}, likesId=${like.likesID})}">Remove Like</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+       <h3>Add Like</h3>
+<form th:action="@{/views/post/{postId}/like/{userId}(postId=${post.postID}, userId=${post.user.userID})}" method="post">
+    <button type="submit">Add Like</button>
+</form>
+    </div>
+</body>
+</html>

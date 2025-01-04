@@ -8,75 +8,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sprint.app.model.Likes;
-import com.sprint.app.model.Messages;
+//import com.sprint.app.model.Messages;
 import com.sprint.app.model.Posts;
 import com.sprint.app.model.Users;
+import com.sprint.app.repo.LikeRepo;
+import com.sprint.app.repo.PostRepo;
 import com.sprint.app.repo.UserRepo;
-import com.sprint.app.services.FriendService;
-import com.sprint.app.services.MessageService;
+//import com.sprint.app.services.FriendService;
+//import com.sprint.app.services.MessageService;
 import com.sprint.app.services.UserService;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class UserServiceImpl implements UserService
 {
 	
 	@Autowired
 	private UserRepo ur;
+//	posts,likes,user
 	
 	@Autowired
-	private MessageService ms;
+	private LikeRepo lr;
 	
 	@Autowired
-	private FriendService fs;
+	private PostRepo pr;
 	
-	//send msg to the frnd
-	public void sendMsgFrnd(int userID, int frdID) {
-		Optional<Users> usropt = ur.findById(userID);
-		Optional<Users> frdopt = ur.findById(frdID);
-		
-		if(usropt.isPresent() && frdopt.isPresent())
-		{
-			Messages msg = new Messages();
-			msg.setMessage_text("Hello, How are you?");
-			msg.setReceiver(frdopt.get());
-			msg.setSender(usropt.get());
-			ms.createMsg(msg);
-		}
-	}
-	
-	//send a frnd request
-	public void sendFrdReq(int userID, int frdID)
-	{
-		fs.addFrnd(userID, frdID);
-	}
-	
-	//msg between 2 users
-	public List<Messages> msgBtwUsers(int userID, int otherID)
-	{
-		Optional<Users> usropt = ur.findById(userID);
-		Optional<Users> othopt = ur.findById(otherID);
-		
-		List<Messages> chats = new ArrayList<>();
-		
-		if(usropt.isPresent() && othopt.isPresent())
-		{
-			for(Messages mgs : ms.getMsgSpecificUser(userID))
-			{
-				if(mgs.getReceiver().getUserID() == otherID || mgs.getSender().getUserID() == otherID)
-					chats.add(mgs);
-			}
-			
-			return chats;
-		}
-		
-		else
-		{
-			return null;
-		}
-		
-		
-	}
-	
+
 	//get all likes get by user on all posts
 	public List<Likes> getAllLikesPst(int userID)
 	{
@@ -96,19 +55,44 @@ public class UserServiceImpl implements UserService
 		
 		return null;
 	}
+
 	
-	//get all likes done by a user
-	public List<Likes> getAllLikesUsr(int userID)
-	{
-		Optional<Users> usropt = ur.findById(userID);
-		
-		if(usropt.isPresent())
-		{
-			return usropt.get().getLikes();
-		}
-		
-		return null;
-	}
+	@Override
+	 public void addLikeToPost(int postId, int userId) {
+	        // Retrieve the post and user from the database (using repositories)
+	        Posts post = pr.findById(postId)
+	                .orElseThrow(() -> new RuntimeException("Post not found"));
+	        Users user = ur.findById(userId)
+	                .orElseThrow(() -> new RuntimeException("User not found"));
+
+	        // Logic to add a like to the post
+	        Likes like = new Likes();
+	        like.setPosts(post);
+	        like.setUser(user);
+	        post.getLikes().add(like);
+	        user.getLikes().add(like);
+	        lr.save(like);
+	    }
+	 
+	 
 	
 
+	@Override
+	public void removeLikeFromPost(int postId, int likesId) {
+        // Find the like by its ID
+        Likes like = lr.findById(likesId)
+                .orElseThrow(() -> new RuntimeException("Like not found"));
+
+        // Ensure the like is associated with the correct post
+        if (like.getPosts().getPostID() != postId) {
+            throw new RuntimeException("This like does not belong to the specified post");
+        }
+
+        // Remove the like from the database
+        Posts post = like.getPosts();
+        post.getLikes().remove(like);
+        lr.delete(like);
+        
+    }
+	
 }

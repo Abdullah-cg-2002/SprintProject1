@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create New Group</title>
+<link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+
+</head>
+<body>
+    <h1>Create a New Group</h1>
+
+
+      
+<form th:action="@{/views/group/added}" th:object="${group}" method="post">
+    <label for="groupName">Group Name:</label>
+    <input type="text" id="groupName" th:field="*{groupName}" required />
+
+    <label for="adminUserId">Admin ID:</label>
+    <input type="text" th:field="*{admin.userID}" required />
+
+    <button type="submit">Create Group</button>
+</form>
+
+
+    <a href="/views/groups">Back to Groups List</a>
+</body>
+</html>
