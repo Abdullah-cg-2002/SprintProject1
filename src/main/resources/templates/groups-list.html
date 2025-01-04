@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Groups List</title>
+<link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+
+</head>
+<body>
+    <h1>All Groups</h1>
+    
+    <!-- Link to add a new group, with a button element inside -->
+    <div>
+        <a href="/views/group/add">
+            <button type="button">Add New Group</button>
+        </a>
+    </div>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Group ID</th>  <!-- Added GroupID column -->
+                <th>Group Name</th>
+                <th>Admin ID</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loop through each group and display group name, group ID, and admin ID -->
+            <tr th:each="group : ${groups}">
+                <td th:text="${group.groupID}">Group ID</td>  <!-- Added GroupID display -->
+                <td th:text="${group.groupName}">Group Name</td>
+                <td th:text="${group.admin.userID}">Admin ID</td> <!-- Displaying Admin ID -->
+                <td>
+                    <!-- View and Edit Group Links -->
+                    <a th:href="@{/views/group/{groupId}(groupId=${group.groupID})}">View</a> |
+                    <a th:href="@{/views/group/edit/{groupId}(groupId=${group.groupID})}">Edit</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

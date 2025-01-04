@@ -11,7 +11,11 @@ import org.slf4j.*;
 
 import com.sprint.app.exception.UserException;
 import com.sprint.app.model.Groups;
+import com.sprint.app.model.Likes;
+import com.sprint.app.model.Messages;
 import com.sprint.app.model.Users;
+import com.sprint.app.repo.LikeRepo;
+import com.sprint.app.repo.PostRepo;
 import com.sprint.app.repo.UserRepo;
 import com.sprint.app.services.UserService;
 import com.sprint.app.dto.MessageDTO;
@@ -22,10 +26,9 @@ import com.sprint.app.exception.UserException;
  * Provides functionalities for user retrieval, addition, deletion, and group management.
  */
 @Service
+@Transactional
 public class UserServiceImpl implements UserService
 {
-	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-
 	@Autowired
 	private UserRepo ur;
 	
@@ -36,7 +39,7 @@ public class UserServiceImpl implements UserService
 	private FriendService fs;
 	
 	//send msg to the frnd
-	public void sendMsgFrnd(int userID, int frdID) {
+	public String sendMsgFrnd(int userID, int frdID, MessageDTO msgdto) {
 		Optional<Users> usropt = ur.findById(userID);
 		Optional<Users> frdopt = ur.findById(frdID);
 		
@@ -272,6 +275,23 @@ public class UserServiceImpl implements UserService
 			logger.error("User not found");
 			throw new UserException("User not found");
 	}
+
+	public void removeLikeFromPost(int postId, int likesId) {
+        // Find the like by its ID
+        Likes like = lr.findById(likesId)
+                .orElseThrow(() -> new RuntimeException("Like not found"));
+
+        // Ensure the like is associated with the correct post
+        if (like.getPosts().getPostID() != postId) {
+            throw new RuntimeException("This like does not belong to the specified post");
+        }
+
+        // Remove the like from the database
+        Posts post = like.getPosts();
+        post.getLikes().remove(like);
+        lr.delete(like);
+        
+    }
 	
 
 }

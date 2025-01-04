@@ -1,15 +1,20 @@
 package com.sprint.app.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import com.sprint.app.model.Users;
+import com.sprint.app.dto.MessageDTO;
+import com.sprint.app.model.Likes;
+import com.sprint.app.model.Messages;
 import com.sprint.app.services.UserService;
-
-import org.slf4j.*;
-import java.util.List;
 
 /**
  * ThymeleafUserController handles HTTP requests for rendering views 
@@ -122,30 +127,7 @@ public class UserWebController {
         logger.info("Search results added to model");
         return "users"; 
     }
-}
-package com.sprint.app.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import com.sprint.app.dto.MessageDTO;
-import com.sprint.app.model.Likes;
-import com.sprint.app.model.Messages;
-import com.sprint.app.services.UserService;
-
-@Controller
-public class UserWebController {
-	
-	@Autowired
-	private UserService userService;
 	
 	//send msg to frnd
 	@GetMapping("/user/send/message/friend")
