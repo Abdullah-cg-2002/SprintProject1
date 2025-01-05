@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Post</title>
+        <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+
+</head>
+<body>
+    <h1>Edit Post</h1>
+    <!-- The action URL should be correctly mapped to your controller -->
+    <form th:action="@{/views/post/update/{postId}(postId=${post.postID})}" th:object="${post}" method="post">
+        
+        <label for="content">Post Content:</label>
+        <textarea id="content" th:field="*{content}" required></textarea>
+        <br>
+        
+        <!-- Access the userID from the post's user object -->
+        <label for="userId">User ID:</label>
+        <input type="text" th:field="*{user.userID}" required />
+        <br>
+        
+        <button type="submit">Update Post</button>
+    </form>
+
+    <a href="/views/posts">Back to Posts List</a>
+</body>
+</html>

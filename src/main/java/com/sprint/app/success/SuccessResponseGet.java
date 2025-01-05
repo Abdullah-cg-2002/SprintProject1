@@ -1,13 +1,16 @@
 package com.sprint.app.success;
 
 import java.util.List;
-import java.util.Set;
+
+import com.sprint.app.model.Posts;
+
+
 
 public class SuccessResponseGet {
 	
 	private String status;
 	private List<Object> data;
-
+	
 	public String getStatus() {
 		return status;
 	}
@@ -17,10 +20,14 @@ public class SuccessResponseGet {
 	public List<Object> getData() {
 		return data;
 	}
-	public void setData(List<Object> data) {
-		this.data = data;
+	
+	public void setData(List<Object> groupsList) {
+		this.data=groupsList;
+		
+	}
+	public void setMessage(List<Object> postList) {
+		this.data=postList;
 	}
 	
 	
-
 }

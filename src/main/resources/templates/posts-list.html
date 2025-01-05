@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Posts List</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+
+</head>
+<body>
+    <h1>All Posts</h1>
+    
+    <a href="/views/post/add">
+            <button type="button">Add New Post</button>
+        </a>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Post ID</th>
+                <th>Content</th>
+                <th>User ID</th> <!-- Display the user who created the post -->
+                <th>Timestamp</th> <!-- Display the post's timestamp -->
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loop through each post and display its information -->
+            <tr th:each="post : ${posts}">
+                <td th:text="${post.postID}"></td>
+                <td th:text="${post.content}"></td> <!-- Display the post content -->
+                <td th:text="${post.user.userID}"></td> <!-- Assuming 'user' is a property of Post and contains the User details -->
+                <td th:text="${post.timestamp}"></td> <!-- Display the timestamp of the post -->
+                <td>
+                    <!-- Link to view the details of the post -->
+                    <a th:href="@{/views/post/{postId}(postId=${post.postID})}">View</a> |
+                    <!-- Link to edit the post -->
+                    <a th:href="@{/views/post/edit/{postId}(postId=${post.postID})}">Edit</a> |
+                    <!-- Link to delete the post -->
+                  
+                    <a th:href="@{/views/post/delete/{postId}(postId=${post.postID})}">Delete</a>
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    
+</body>
+</html>

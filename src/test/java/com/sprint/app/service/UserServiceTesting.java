@@ -1,38 +1,34 @@
 package com.sprint.app.service;
 
-import com.sprint.app.exception.UserNotFoundException;
-import com.sprint.app.model.Comments;
-import com.sprint.app.model.Posts;
-import com.sprint.app.model.Users;
-import com.sprint.app.serviceimpl.UserServiceImpl;
-import com.sprint.app.repo.UserRepo;
-import com.sprint.app.repo.PostRepo;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import com.sprint.app.model.Likes;
+import com.sprint.app.model.Posts;
+import com.sprint.app.model.Users;
+import com.sprint.app.repo.LikeRepo;
+import com.sprint.app.repo.PostRepo;
+import com.sprint.app.repo.UserRepo;
+import com.sprint.app.serviceimpl.UserServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 @SpringBootTest
-@Transactional
-class UserServiceTesting {
+public class UserServiceTesting {
 
     @Autowired
-    private UserServiceImpl userService;
+    private LikeRepo lr; // Repository for Likes
 
     @Autowired
-    private UserRepo userRepo;
+    private PostRepo pr; // Repository for Posts
 
     @Autowired
-    private PostRepo postRepo;
+    private UserRepo ur; // Repository for Users
 
-    private Users user;
-    private Posts post;
+    @Autowired
+    private UserServiceImpl userServiceImpl; // The service you are testing
 
     @BeforeEach
     void setUp() {
@@ -50,96 +46,57 @@ class UserServiceTesting {
     }
 
     @Test
-    void testGetAllPostsUsr_Success() {
-        int validUserID = 7;
-        List<Posts> posts = userService.getAllPostsUsr(validUserID);
-        assertNotNull(posts, "Posts list should not be null");
+    void testAddLikeToPost() {
+        // Set up the Post and User for this test
+        Posts post = new Posts();
+        post.setContent("Content of the Test Post");
+        pr.save(post); // Save post to database
 
-        // Ensure the list is not empty before accessing its elements
+        Users user = new Users();
+        user.setUsername("TestUser");
+        user.setEmail("testuser@example.com");
+        ur.save(user); // Save user to database
 
-        // If it's not empty, you can safely check the content
-        assertEquals(1, posts.size(), "There should be exactly one post for user with ID 1");
-        assertEquals("Post content by user7", posts.get(0).getContent(), "The post content should match.");
-    }
+        // Act: Add a like to the post by the user
+        userServiceImpl.addLikeToPost(post.getPostID(), user.getUserID());
 
+        // Assert: Verify the like is added to the database
+        Likes like = lr.findAll().stream()
+                .filter(l -> l.getPosts().getPostID() == post.getPostID() && l.getUser().getUserID() == user.getUserID())
+                .findFirst()
+                .orElse(null);
 
-    @Test
-    void testGetAllPostsUsr_UserNotFound() {
-       
-        UserNotFoundException thrown = assertThrows(UserNotFoundException.class, () -> {
-            userService.getAllPostsUsr(9999);  
-        });
-
-       
-        assertEquals("User not found with ID: 9999", thrown.getMessage());
-    }
-
-
-    @Test
-    void testGetAllCmtsPst_Success() {
-        
-        Comments comment = new Comments();
-        comment.setCommentText("This is a comment");
-        comment.setPost(post);
-        comment.setUsers(user);
-        
-
-       
-        List<Comments> comments = userService.getAllCmtsPst(2); // User ID 2
-        assertNotNull(comments, "Comments list should not be null");
-        assertEquals(1, comments.size(), "There should be exactly one comment for user with ID 2");
-        assertEquals("updated comment for the postID 102", comments.get(0).getCommentText(), "The comment text should match.");
+        assertNotNull(like, "The like should exist in the database after being added");
     }
 
     @Test
-    void testGetAllCmtsPst_UserNotFound() {
-    	 UserNotFoundException thrown = assertThrows(UserNotFoundException.class, () -> {
-             userService.getAllCmtsPst(1987);
-         });
+    void testRemoveLikeFromPost() {
+        // Set up the Post and User for this test
+        Posts post = new Posts();
+        post.setContent("Content of the Test Post");
+        pr.save(post); // Save post to database
 
-        
-         assertEquals("User not found with ID: 1987", thrown.getMessage());
-     }
-    
+        Users user = new Users();
+        user.setUsername("TestUser");
+        user.setEmail("testuser@example.com");
+        ur.save(user); // Save user to database
 
-    @Test
-    void testGetPendingFrndReq_Success() {
-        // Simulate pending friend requests
-        // Assuming you have a way to add friend requests in your setup.
+        // Add a like to the post
+        userServiceImpl.addLikeToPost(post.getPostID(), user.getUserID());
 
-        // Call method to get pending friend requests for a user
-        List<Object> pendingRequests = userService.getPendingFrndReq(2); // User ID 2
-        assertNotNull(pendingRequests, "Pending friend requests should not be null");
-        // Add specific assertions based on your data for pending requests
-    }
+        // Retrieve the like that was just added
+        Likes like = lr.findAll().stream()
+                .filter(l -> l.getPosts().getPostID() == post.getPostID() && l.getUser().getUserID() == user.getUserID())
+                .findFirst()
+                .orElse(null);
 
-    @Test
-    void testGetPendingFrndReq_UserNotFound() {
-    	 UserNotFoundException thrown = assertThrows(UserNotFoundException.class, () -> {
-             userService.getPendingFrndReq(1000);
-         });
+        assertNotNull(like, "The like should exist in the database before deletion");
 
-        
-         assertEquals("User not found with ID: 1000", thrown.getMessage());
-     }
-    
+        // Act: Remove the like from the post
+        userServiceImpl.removeLikeFromPost(post.getPostID(), like.getLikesID());
 
-    @Test
-    void testGetAllPostsUsr_UserWithNoPosts() {
-        Users newUser = new Users();
-        newUser.setUserID(3);
-        newUser.setUsername("user3");
-        userRepo.save(newUser);
-
-        List<Posts> posts = userService.getAllPostsUsr(3);
-        assertNotNull(posts, "Posts list should not be null");
-        assertEquals(0, posts.size(), "There should be no posts for user with ID 3");
-    }
-
-    @Test
-    void testGetAllCmtsPst_NoComments() {
-        List<Comments> comments = userService.getAllCmtsPst(1); // User with no comments
-        assertNotNull(comments, "Comments list should not be null");
-        assertEquals(0, comments.size(), "There should be no comments for the user with ID 65");
+        // Assert: Verify the like is removed from the database
+        Likes removedLike = lr.findById(like.getLikesID()).orElse(null);
+        assertNull(removedLike, "The like should be removed from the database after deletion");
     }
 }

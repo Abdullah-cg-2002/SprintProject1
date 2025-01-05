@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Group</title>
+<link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+
+</head>
+<body>
+    <h1>Edit Group</h1>
+    <form th:action="@{/views/group/update/{groupId}(groupId=${group.groupID})}" th:object="${group}" method="post">
+        <label for="groupName">Group Name:</label>
+        <input type="text" id="groupName" th:field="*{groupName}" required />
+        <br>
+        <label for="adminID">Admin ID:</label>
+        <input type="text" th:field="*{admin.userID}" th:value="${userId}" required />
+        
+        <button type="submit">Update Group</button>
+    </form>
+
+    <a href="/views/groups">Back to Groups List</a>
+</body>
+</html>
