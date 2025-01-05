@@ -2,35 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Messages</title>
+    <title>Message Details</title>
+    <link rel="stylesheet" type=text/css href="/styles.css">
 </head>
 <body>
-    <h1>Messages</h1>
-
-    <!-- Iterate over the messages list and display each message -->
+    <h1>Message Details</h1>
     <div>
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Sender</th>
-                    <th>Receiver</th>
-                    <th>Message</th>
-                    <th>Timestamp</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="message : ${messages}">
-                    <!-- Display the sender's name -->
-                    <td th:text="${message.sender.username}"></td>
-                    <!-- Display the receiver's name -->
-                    <td th:text="${message.receiver.username}"></td>
-                    <!-- Display the message text -->
-                    <td th:text="${message.message_text}"></td>
-                    <!-- Display the timestamp using #temporals.format -->
-                    <td th:text="${#temporals.format(message.timestamp, 'yyyy-MM-dd HH:mm:ss')}"></td>
-                </tr>
-            </tbody>
-        </table>
+        <p><strong>Sender:</strong> <span th:text="${message.sender.username}"></span></p>
+        <p><strong>Receiver:</strong> <span th:text="${message.receiver.username}"></span></p>
+        <p><strong>Message:</strong> <span th:text="${message.message_text}"></span></p>
+        <p><strong>Timestamp:</strong> <span th:text="${message.timestamp}"></span></p>
+        <a href="/messages">Back to Messages List</a>
     </div>
 </body>
 </html>
