@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Groups</title>
+</head>
+<body>
+    <h1>User Groups</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Group ID</th>
+                <th>Group Name</th>
+               
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="group : ${groups}">
+                <td th:text="${group.groupID}"></td>
+                <td th:text="${group.groupName}"></td>
+                
+            </tr>
+        </tbody>
+    </table>
+    <a href="/web/groups">Back to All Groups</a>
+</body>
+</html>

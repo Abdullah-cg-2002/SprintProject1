@@ -17,6 +17,10 @@ public class Messages {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int messageID;
+	public void setMessageID(int messageID) {
+		this.messageID = messageID;
+	}
+
 	private String message_text;
 	private LocalDateTime timestamp;
 	

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Notifications</title>
+</head>
+<body>
+    <h1>Notifications</h1>
+
+    <!-- Display error message if present -->
+    <p th:if="${error}" th:text="${error}" style="color: red;"></p>
+
+    <!-- Display notifications list if available -->
+    <ul th:if="${notifications != null}">
+        <li th:each="notification : ${notifications}">
+            <!-- Assuming 'content' is the attribute holding the notification message -->
+            <span th:text="${notification.content}">Notification Content</span> 
+        </li>
+    </ul>
+
+    <!-- Message if no notifications are available -->
+    <p th:if="${notifications == null || notifications.isEmpty()}" style="color: gray;">
+        No notifications available.
+    </p>
+    
+    <!-- Back to User List -->
+    <br>
+    <a th:href="@{/users/getAll}">Back to User List</a>
+</body>
+</html>

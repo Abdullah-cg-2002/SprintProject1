@@ -6,6 +6,7 @@ public class SuccessResponseGet {
 	
 	private String status;
 	private List<Object> data;
+
 	public String getStatus() {
 		return status;
 	}

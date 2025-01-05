@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>All Users</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+<body>
+    <h1>All Users</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.userID}">1</td>
+                <td th:text="${user.username}">John Doe</td>
+                <td th:text="${user.email}">john@example.com</td>
+                <td>
+                    <a th:href="@{/users/{id}/notifications(id=${user.userID})}">View Notifications</a>
+                    <a th:href="@{/users/edit/{id}(id=${user.userID})}">Edit</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
