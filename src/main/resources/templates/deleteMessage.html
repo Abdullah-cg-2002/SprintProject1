@@ -2,21 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Message Form</title>
+    <title>Delete Message</title>
+    <link rel="stylesheet" type=text/css href="/styles.css">
 </head>
 <body>
-
-<h2>Delete Message</h2>
-
-<form th:action="@{/message/deleted}" th:object="${message}" method="post">
+    <h1>Delete Message</h1>
+    <p>Are you sure you want to delete the message?</p>
     <div>
-        MessageId : <input type="number" name="messageID">
+        <p><strong>Sender:</strong> <span th:text="${message.sender.username}"></span></p>
+        <p><strong>Receiver:</strong> <span th:text="${message.receiver.username}"></span></p>
+        <p><strong>Message:</strong> <span th:text="${message.message_text}"></span></p>
     </div>
-    <div>
-        <button type="submit">Delete Message</button>
-    </div>
-</form>
-
-
+    <form th:action="@{'/messages/delete/' + ${message.messageID}}" method="post">
+        <button type="submit">Yes, delete this message</button>
+    </form>
+    <a href="/messages">Cancel</a>
 </body>
 </html>
