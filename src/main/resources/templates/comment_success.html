@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Comment Success</title>
+      <link rel="stylesheet" type="text/css" th:href="@{/formStyle.css}">
+</head>
+<body>
+    <h1>Comment Creation Successful!</h1>
+    
+    <!-- Display the success message -->
+    <div th:if="${successResponse}">
+        <p th:text="${successResponse.message}"></p>
+        <p>Status: <span th:text="${successResponse.status}"></span></p>
+    </div>
+
+    <!-- Optional: Link back to the comment creation form or another page -->
+    <div>
+        <a th:href="@{/createComment}">Create another comment</a>
+      
+        
+    </div>
+    
+    <!-- Optional: Link to view the post or comment list -->
+    <div>
+        <a th:href="@{/post/{postID}(postID=${postID})}">Go back to the Post</a>
+    </div>
+
+</body>
+</html>

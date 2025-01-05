@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Messages</title>
+</head>
+<body>
+    <h1>Messages</h1>
+
+    <!-- Iterate over the messages list and display each message -->
+    <div>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Sender</th>
+                    <th>Receiver</th>
+                    <th>Message</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="message : ${messages}">
+                    <!-- Display the sender's name -->
+                    <td th:text="${message.sender.username}"></td>
+                    <!-- Display the receiver's name -->
+                    <td th:text="${message.receiver.username}"></td>
+                    <!-- Display the message text -->
+                    <td th:text="${message.message_text}"></td>
+                    <!-- Display the timestamp using #temporals.format -->
+                    <td th:text="${#temporals.format(message.timestamp, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

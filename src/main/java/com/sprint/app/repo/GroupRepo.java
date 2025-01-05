@@ -49,8 +49,15 @@ public interface GroupRepo extends JpaRepository<Groups, Integer>
 //	  @Query("SELECT g FROM Groups g JOIN g.members m WHERE m.id IN (SELECT f.friendId FROM Friend f WHERE f.groupId = g.id)")
 //	  public List<Groups> findFriendsOfGroupMembers1(int groupId);
 	  
-	  
+	  /**
+     * Finds the {@link Users} associated with a given group ID.
+     * 
+     * @param groupID the ID of the group to find the user for
+     * @return the {@link Users} associated with the specified group ID
+     */
+    // Users findUsersByGroupID(int groupID);
 
 	 
 
+    
 }

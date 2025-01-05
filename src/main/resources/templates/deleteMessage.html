@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Message</title>
+    <link rel="stylesheet" type=text/css href="/styles.css">
+</head>
+<body>
+    <h1>Delete Message</h1>
+    <p>Are you sure you want to delete the message?</p>
+    <div>
+        <p><strong>Sender:</strong> <span th:text="${message.sender.username}"></span></p>
+        <p><strong>Receiver:</strong> <span th:text="${message.receiver.username}"></span></p>
+        <p><strong>Message:</strong> <span th:text="${message.message_text}"></span></p>
+    </div>
+    <form th:action="@{'/messages/delete/' + ${message.messageID}}" method="post">
+        <button type="submit">Yes, delete this message</button>
+    </form>
+    <a href="/messages">Cancel</a>
+</body>
+</html>

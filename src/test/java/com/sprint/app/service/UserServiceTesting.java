@@ -1,39 +1,107 @@
 package com.sprint.app.service;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-
-import com.sprint.app.model.Notifications;
-import com.sprint.app.model.Users;
-import com.sprint.app.repo.UserRepo;
-import com.sprint.app.serviceimpl.UserServiceImpl;
-import com.sprint.app.success.SuccessResponseGet;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+
+import com.sprint.app.model.Likes;
+import com.sprint.app.model.Posts;
+import com.sprint.app.model.Users;
+import com.sprint.app.repo.LikeRepo;
+import com.sprint.app.repo.PostRepo;
+import com.sprint.app.repo.UserRepo;
+import com.sprint.app.serviceimpl.UserServiceImpl;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
-@SpringBootTest // This ensures Spring Boot context is loaded for integration tests
-@Transactional // Rolls back each test to keep database state consistent
-class UserServiceTesting {
+@SpringBootTest
+public class UserServiceTesting {
 
-	@Autowired
-    private UserRepo userRepository; // Autowire the actual repository
+    @Autowired
+    private LikeRepo lr; // Repository for Likes
 
-    private UserServiceImpl userService;
+    @Autowired
+    private PostRepo pr; // Repository for Posts
+
+    @Autowired
+    private UserRepo ur; // Repository for Users
+
+    @Autowired
+    private UserServiceImpl userServiceImpl; // The service you are testing
 
     @BeforeEach
     void setUp() {
-        userService = new UserServiceImpl(userRepository); // Initialize the service with the actual repo
+        // Setup user and post for tests
+        user = new Users();
+        user.setUserID(1);
+        user.setUsername("user1");
+        userRepo.save(user);
+
+        post = new Posts();
+        post.setPostID(101);
+        post.setUser(user);
+        post.setContent("Post content by user1");
+        postRepo.save(post);
     }
-    
 
     @Test
+    void testAddLikeToPost() {
+        // Set up the Post and User for this test
+        Posts post = new Posts();
+        post.setContent("Content of the Test Post");
+        pr.save(post); // Save post to database
+
+        Users user = new Users();
+        user.setUsername("TestUser");
+        user.setEmail("testuser@example.com");
+        ur.save(user); // Save user to database
+
+        // Act: Add a like to the post by the user
+        userServiceImpl.addLikeToPost(post.getPostID(), user.getUserID());
+
+        // Assert: Verify the like is added to the database
+        Likes like = lr.findAll().stream()
+                .filter(l -> l.getPosts().getPostID() == post.getPostID() && l.getUser().getUserID() == user.getUserID())
+                .findFirst()
+                .orElse(null);
+
+        assertNotNull(like, "The like should exist in the database after being added");
+    }
+
+    @Test
+    void testRemoveLikeFromPost() {
+        // Set up the Post and User for this test
+        Posts post = new Posts();
+        post.setContent("Content of the Test Post");
+        pr.save(post); // Save post to database
+
+        Users user = new Users();
+        user.setUsername("TestUser");
+        user.setEmail("testuser@example.com");
+        ur.save(user); // Save user to database
+
+        // Add a like to the post
+        userServiceImpl.addLikeToPost(post.getPostID(), user.getUserID());
+
+        // Retrieve the like that was just added
+        Likes like = lr.findAll().stream()
+                .filter(l -> l.getPosts().getPostID() == post.getPostID() && l.getUser().getUserID() == user.getUserID())
+                .findFirst()
+                .orElse(null);
+
+        assertNotNull(like, "The like should exist in the database before deletion");
+
+        // Act: Remove the like from the post
+        userServiceImpl.removeLikeFromPost(post.getPostID(), like.getLikesID());
+
+        // Assert: Verify the like is removed from the database
+        Likes removedLike = lr.findById(like.getLikesID()).orElse(null);
+        assertNull(removedLike, "The like should be removed from the database after deletion");
+    }
+
+    @Test
+    @Transactional
     void testUpdateUser_Success() {
         // Setup data for testing
         Users existingUser = new Users();
@@ -63,6 +131,7 @@ class UserServiceTesting {
     }
 
     @Test
+    @Transactional
     void testUpdateUser_EmailExists() {
         // Create the first user with an email
         Users user1 = new Users();

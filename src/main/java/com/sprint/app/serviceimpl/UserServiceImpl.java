@@ -1,69 +1,87 @@
 package com.sprint.app.serviceimpl;
 
 import java.util.ArrayList;
-
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Set;
+import java.util.regex.*;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.slf4j.*;
 
-import com.sprint.app.exception.*;
+import com.sprint.app.exception.UserException;
+import com.sprint.app.model.Groups;
 import com.sprint.app.model.Likes;
 import com.sprint.app.model.Messages;
 import com.sprint.app.model.Notifications;
 import com.sprint.app.model.Posts;
 import com.sprint.app.model.Users;
+import com.sprint.app.repo.LikeRepo;
+import com.sprint.app.repo.PostRepo;
 import com.sprint.app.repo.UserRepo;
-import com.sprint.app.services.FriendService;
-import com.sprint.app.services.MessageService;
 import com.sprint.app.services.UserService;
-import com.sprint.app.success.SuccessResponseGet;
+import com.sprint.app.dto.MessageDTO;
+import com.sprint.app.exception.UserException;
 
+/**
+ * Service implementation for managing user-related operations.
+ * Provides functionalities for user retrieval, addition, deletion, and group management.
+ */
 @Service
+@Transactional
 public class UserServiceImpl implements UserService
 {
-	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 	@Autowired
 	private UserRepo ur;
 	
-	@Autowired
-	private MessageService ms;
-	
-	@Autowired
-	private FriendService fs;
-	
-	@Autowired
-	public UserServiceImpl(UserRepo ur) {
-		this.ur = ur;
-	}
 
+	
+	
+	 private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+	
 	//send msg to the frnd
-	public void sendMsgFrnd(int userID, int frdID) {
+	public String sendMsgFrnd(int userID, int frdID, MessageDTO msgdto) {
 		Optional<Users> usropt = ur.findById(userID);
 		Optional<Users> frdopt = ur.findById(frdID);
 		
 		if(usropt.isPresent() && frdopt.isPresent())
 		{
-			Messages msg = new Messages();
-			msg.setMessage_text("Hello, How are you?");
-			msg.setReceiver(frdopt.get());
-			msg.setSender(usropt.get());
-			ms.createMsg(msg);
+			msgdto.setSender(usropt.get());
+			msgdto.setReceiver(frdopt.get());
+			ms.createMsg(msgdto);
+			return "success";
+		}
+		
+		else
+		{
+			throw new UserException("User or Friend not found");
 		}
 	}
 	
-	//send a frnd request
-	public void sendFrdReq(int userID, int frdID)
+	/**
+	 * @param userID
+	 * @param frdID
+	 * @return success if friend request sent 
+	 */
+	
+	public String sendFrdReq(int userID, int frdID)
 	{
-		fs.addFrnd(userID, frdID);
+		Optional<Users> user = ur.findById(userID);
+		Optional<Users> frd = ur.findById(frdID);
+		if(user.isPresent() && frd.isPresent())
+			return fs.addFrnd(userID, frdID);
+		else
+			throw new UserException("UserId or FriendId not found");
 	}
 	
-	//msg between 2 users
+	/**
+	 * @param userID
+	 * @param otherID
+	 * @return list of message between users
+	 */
 	public List<Messages> msgBtwUsers(int userID, int otherID)
 	{
 		Optional<Users> usropt = ur.findById(userID);
@@ -84,7 +102,7 @@ public class UserServiceImpl implements UserService
 		
 		else
 		{
-			return null;
+			throw new UserException("User or Receiver not found");
 		}
 		
 		
@@ -107,7 +125,10 @@ public class UserServiceImpl implements UserService
 			return likes;
 		}
 		
-		return null;
+		else
+		{
+			throw new UserException("User not found");
+		}
 	}
 	
 	//get all likes done by a user
@@ -120,75 +141,289 @@ public class UserServiceImpl implements UserService
 			return usropt.get().getLikes();
 		}
 		
-		return null;
+		else
+		{
+			throw new UserException("User not found");
+		}
 	}
 
-	
-	public Users getUserById(int userID) {
-        Optional<Users> userOptional = ur.findById(userID);
-        return userOptional.orElse(null); // Return null if the user is not found
-    }
 	/**
-     * Updates the information of a user.
-     *
-     * @param userID the unique identifier of the user to be updated. Must be a positive integer.
-     * @param user   the Users object containing updated information. Must not be null.
-     * @return a message indicating the result of the update operation.
-     * @throws RuntimeException if the email or username already exists for another user.
-     */
-	@Override
-	public String updateUser(int userID, Users user) {
-		 logger.info("Starting update for user with ID: {}", userID);
-		 
-		List<Users> existingUserByMail = ur.findByEmail(user.getEmail());
-		List<Users> existingUserByName = ur.findByUsername(user.getUsername());
-		
-		if(!existingUserByName.isEmpty() && existingUserByName.get(0).getUserID()!=userID) {
-			logger.error("Email already exists for user with ID: {}", userID);
-			throw new UserException("Email already exists");
-		}
-		if(!existingUserByMail.isEmpty() && existingUserByMail.get(0).getUserID() !=userID) {
-			logger.error("Username already exists for user with ID: {}", userID);
-			throw new UserException("Username already exists");
-		}
-		
-		Users u1 = ur.findById(userID).get();
-		u1.setUsername(user.getUsername());
-		u1.setEmail(user.getEmail());
-		u1.setPassword(user.getPassword());
-		ur.save(u1);
-		
-		logger.info("User with ID: {} successfully updated", userID);
-		return "User updated successfully";
+	 * Retrieves all users from the repository.
+	 *
+	 * @return List of all users.
+	 */
+	public List<Users> getAllUsers() {
+		logger.info("Fetching all users");
+		return ur.findAll();
 	}
-	
+
+	/**
+	 * Retrieves a specific user by their ID.
+	 *
+	 * @param userID ID of the user to be retrieved.
+	 * @return The user with the specified ID.
+	 * @throws RuntimeException if the user ID is not found.
+	 */
+
+	public Users getSpecificUser(int userID) {
+		logger.info("Fetching specific user");
+		Optional<Users> opt = ur.findById(userID);
+		if(opt.isPresent())
+		{
+			logger.info("User found");
+			return opt.get();
+		}
+		else
+		{
+			logger.error("User ID not found");
+			throw new UserException("userid not found");
+		}
+	}
+
+	/**
+	 * Searches for users by their username.
+	 *
+	 * @param username The username to search for.
+	 * @return List of users matching the given username.
+	 * @throws RuntimeException if no users with the username are found.
+	 */
+
+	public List<Users> searchForUserByName(String username) {
+		logger.info("Searching for user by username");
+		List<Users> lis = new ArrayList<>();
+		lis.addAll(ur.findByUsername(username));
+		if(lis.isEmpty())
+		{
+			logger.warn("Username not found");
+			throw new UserException("Username not found");
+		}
+		logger.info("Users found");
+		return lis;
+	}
+
+	/**
+	 * Adds a new user to the repository.
+	 *
+	 * @param user The user object to be added.
+	 * @throws RuntimeException if the email or password format is invalid.
+	 */
+
+	public void addUser(Users user) {
+		logger.info("Adding a new user");
+		String regemail = "^[a-z0-9]{5,}@[a-z]{2,}+\\.[a-z]{2,}$";
+		Pattern pe = Pattern.compile(regemail);
+ 
+		String email = user.getEmail();
+		Matcher mt = pe.matcher(email);
+ 
+		if(!mt.matches())
+		{
+			logger.error("Invalid email format");
+			throw new UserException("Email not Valid");
+		}
+		String regpass = "^(?=.*[@#$%*]).{5,}";
+		Pattern pp = Pattern.compile(regpass);
+ 
+		String password = user.getPassword();
+		mt = pp.matcher(password);
+ 
+		if(!mt.matches())
+		{
+			logger.error("Invalid password format");
+			throw new UserException("Password not valid");
+		}
+		ur.save(user);
+		logger.info("User added successfully");
+	}
+
+	/**
+	 * Deletes a user from the repository.
+	 *
+	 * @param userID ID of the user to be deleted.
+	 */
+
+	public void deleteUser(int userID) {
+		logger.info("Deleting user");
+		Optional<Users> opt = ur.findById(userID);
+		if(opt.isPresent())
+		{
+			System.out.println(opt.get().getUserID());
+		   ur.deleteById(userID);
+		   logger.info("User has been Deleted");
+		}
+		else
+		{
+			throw new UserException("UserID doesn't exist");
+		}
+		
+	}
+
+	/**
+	 * Retrieves all groups associated with a specific user.
+	 *
+	 * @param userID ID of the user whose groups are to be retrieved.
+	 * @return List of groups associated with the user.
+	 * @throws RuntimeException if the user ID is not found.
+	 */
+
+	public List<Groups> getAllGroupsofUser(int userID) {
+		logger.info("Fetching all groups of user");
+		Optional<Users> opt = ur.findById(userID);
+		if(opt.isPresent())
+		{
+			logger.info("User found");
+			Users usr = opt.get();
+            return usr.getGroups();
+		}
+		else
+			logger.error("User not found");
+			throw new UserException("User not found");
+	}
+
+	public void removeLikeFromPost(int postId, int likesId) {
+        // Find the like by its ID
+        Likes like = lr.findById(likesId)
+                .orElseThrow(() -> new RuntimeException("Like not found"));
+
+        // Ensure the like is associated with the correct post
+        if (like.getPosts().getPostID() != postId) {
+            throw new RuntimeException("This like does not belong to the specified post");
+        }
+
+        // Remove the like from the database
+        Posts post = like.getPosts();
+        post.getLikes().remove(like);
+        lr.delete(like);
+        
+    }
+
+	/**
+     * Retrieves all posts created by a specific user.
+     * 
+     * @param userID The ID of the user whose posts to retrieve.
+     * @return A list of posts created by the user, or null if the user is not found.
+     */
+    @Override
+    public List<Posts> getAllPostsUsr(int userID) {
+        logger.info("Attempting to retrieve posts for user with ID: {}", userID);
+        Optional<Users> usropt = ur.findById(userID);
+
+        if (usropt.isPresent()) {
+            logger.info("Found user with ID: {}", userID);
+            return usropt.get().getPosts();
+        }
+        logger.warn("User with ID: {} not found.", userID);
+        throw new UserNotFoundException("User not found with ID: " + userID);
+    }
 
     /**
-     * Retrieves notifications for a specific user.
-     *
-     * @param userID the unique identifier of the user whose notifications are to be retrieved. Must be a positive integer.
-     * @return a SuccessResponseGet object containing the status and list of notifications for the specified user.
-     * @throws RuntimeException if no notifications are found for the given user ID.
+     * Retrieves all comments made on posts created by a specific user.
+     * 
+     * @param userID The ID of the user whose posts' comments are to be retrieved.
+     * @return A list of comments on the user's posts, or null if the user is not found.
      */
-	@Override
-	public SuccessResponseGet getNotificationByUserID(int userID) {
-		logger.info("Retrieving notifications for user with ID: {}", userID);
-		Users u2 = ur.findById(userID).get();
-		List<Notifications> notification = u2.getNotification();
-		if(notification.isEmpty()) {
-			logger.error("No notifications found for user with ID: {}", userID);
-			throw new UserException("Notification not found for the given user ID");
-		}
-		SuccessResponseGet response = new SuccessResponseGet();
-	    response.setStatus("success");
-	    response.setData(new ArrayList<>(notification));  
-	    logger.info("Successfully retrieved notifications for user with ID: {}", userID);
-	    return response;
-	}
+    @Override
+    public List<Comments> getAllCmtsPst(int userID) {
+        logger.info("Attempting to retrieve comments for posts by user with ID: {}", userID);
+        Optional<Users> usropt = ur.findById(userID);
 
+        if (usropt.isPresent()) {
+            List<Comments> cmts = new ArrayList<>();
+            Users usr = usropt.get();
 
-	public List<Users> getAllUsers() {
-        return ur.findAll();
+            // Iterate over the user's posts and collect all comments
+            for (Posts pst : usr.getPosts()) {
+                cmts.addAll(pst.getComments());
+            }
+            logger.info("Found {} comments for user with ID: {}", cmts.size(), userID);
+            return cmts;
+        }
+        logger.warn("User with ID: {} not found.", userID);
+        throw new UserNotFoundException("User not found with ID: " + userID);
     }
+
+    /**
+     * Retrieves all pending friend requests for a specific user.
+     * A friend request is considered pending if the status is "PENDING".
+     * 
+     * @param userID The ID of the user whose pending friend requests are to be retrieved.
+     * @return A list of pending friend requests, or null if the user is not found.
+     */
+    @Override
+    public List<Object> getPendingFrndReq(int userID) {
+        logger.info("Attempting to retrieve pending friend requests for user with ID: {}", userID);
+        Optional<Users> usropt = ur.findById(userID);
+
+        if (usropt.isPresent()) {
+            Users usr = usropt.get();
+            Set<Friends> allFrnds = new HashSet<>();
+            List<Object> pendingReq = new ArrayList<>();
+
+            // Add both sent and received friend requests
+            allFrnds.addAll(usr.getFriendsent());
+            allFrnds.addAll(usr.getFriendsrec());
+
+            // Filter out pending friend requests
+            for (Friends frnds : allFrnds) {
+                if (Status.PENDING.equals(frnds.getStatus())) {
+                    pendingReq.add(frnds);
+                }
+            }
+            logger.info("Found {} pending friend requests for user with ID: {}", pendingReq.size(), userID);
+            return pendingReq;
+        }
+        logger.warn("User with ID: {} not found.", userID);
+        throw new UserNotFoundException("User not found with ID: " + userID);
+    }
+
+	public String updateUser(int userID, Users user) {
+		logger.info("Starting update for user with ID: {}", userID);
+		
+	   List<Users> existingUserByMail = ur.findByEmail(user.getEmail());
+	   List<Users> existingUserByName = ur.findByUsername(user.getUsername());
+	   
+	   if(!existingUserByName.isEmpty() && existingUserByName.get(0).getUserID()!=userID) {
+		   logger.error("Email already exists for user with ID: {}", userID);
+		   throw new UserException("Email already exists");
+	   }
+	   if(!existingUserByMail.isEmpty() && existingUserByMail.get(0).getUserID() !=userID) {
+		   logger.error("Username already exists for user with ID: {}", userID);
+		   throw new UserException("Username already exists");
+	   }
+	   
+	   Users u1 = ur.findById(userID).get();
+	   u1.setUsername(user.getUsername());
+	   u1.setEmail(user.getEmail());
+	   u1.setPassword(user.getPassword());
+	   ur.save(u1);
+	   
+	   logger.info("User with ID: {} successfully updated", userID);
+	   return "User updated successfully";
+   }
+   
+
+   /**
+	* Retrieves notifications for a specific user.
+	*
+	* @param userID the unique identifier of the user whose notifications are to be retrieved. Must be a positive integer.
+	* @return a SuccessResponseGet object containing the status and list of notifications for the specified user.
+	* @throws RuntimeException if no notifications are found for the given user ID.
+	*/
+   @Override
+   public SuccessResponseGet getNotificationByUserID(int userID) {
+	   logger.info("Retrieving notifications for user with ID: {}", userID);
+	   Users u2 = ur.findById(userID).get();
+	   List<Notifications> notification = u2.getNotification();
+	   if(notification.isEmpty()) {
+		   logger.error("No notifications found for user with ID: {}", userID);
+		   throw new UserException("Notification not found for the given user ID");
+	   }
+	   SuccessResponseGet response = new SuccessResponseGet();
+	   response.setStatus("success");
+	   response.setData(new ArrayList<>(notification));  
+	   logger.info("Successfully retrieved notifications for user with ID: {}", userID);
+	   return response;
+   }
 	
+
 }

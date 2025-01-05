@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Send Message to Friend</title>
+        <link rel="stylesheet" type=text/css href="/styles.css">
+    </head>
+    <body>
+
+        <h1>Send Message to Friend <span th:text="${friendshipID}"></span></h1>
+
+        <form th:action="@{/friends/{userID}/messages/{friendshipID}/sent(friendshipID=${friendshipID}, userID=${userID})}" method="post">
+            <input type="hidden" th:name="friendshipID" th:value="${friendshipID}"/>
+            <label for="messageContent">Message Content:</label>
+            <textarea id="messageContent" name="messageContent" required></textarea>
+            <button type="submit">Send Message</button>
+        </form>
+
+        <a href="/friends/{userID}/list">Back to Friends List</a>
+
+    </body>
+</html>

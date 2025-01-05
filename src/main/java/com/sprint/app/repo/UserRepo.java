@@ -1,5 +1,7 @@
 package com.sprint.app.repo;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import org.springframework.stereotype.Repository;
@@ -17,7 +19,6 @@ import java.util.*;
 @Repository
 public interface UserRepo extends JpaRepository<Users, Integer>
 {
-	//kiki
 	/**
      * Retrieves a list of users with the specified username.
      *

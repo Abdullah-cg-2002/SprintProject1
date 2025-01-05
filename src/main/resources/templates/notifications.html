@@ -1,29 +1,43 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Notifications</title>
+    <title>User Notifications</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
 </head>
 <body>
-    <h1>Notifications</h1>
-
-    <!-- Display error message if present -->
-    <p th:if="${error}" th:text="${error}" style="color: red;"></p>
-
-    <!-- Display notifications list if available -->
-    <ul th:if="${notifications != null}">
-        <li th:each="notification : ${notifications}">
-            <!-- Assuming 'content' is the attribute holding the notification message -->
-            <span th:text="${notification.content}">Notification Content</span> 
-        </li>
-    </ul>
-
-    <!-- Message if no notifications are available -->
-    <p th:if="${notifications == null || notifications.isEmpty()}" style="color: gray;">
-        No notifications available.
-    </p>
-    
-    <!-- Back to User List -->
-    <br>
-    <a th:href="@{/users/getAll}">Back to User List</a>
+    <div class="container">
+        <h1>Notifications for User ID: <span th:text="${userID}"></span></h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Notification ID</th>
+                    <th>Content</th>
+                    <th>Timestamp</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="notification : ${notifications}">
+                    <td th:text="${notification.notificationID}"></td>
+                    <td th:text="${notification.content}"></td>
+                    <td th:text="${#temporals.format(notification.timestamp, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td>
+                        <!-- View Notification -->
+                        <a th:href="@{/notifications/{notificationID}(notificationID=${notification.notificationID})}">View</a>
+                        
+                        <!-- Mark as Read -->
+                        <form th:action="@{/notifications/mark-read/{userID}/{notificationID}(userID=${userID}, notificationID=${notification.notificationID})}" method="post" style="display:inline;">
+                            <button type="submit">Mark as Read</button>
+                        </form>
+                        
+                        <!-- Delete Notification -->
+                        <a th:href="@{/notifications/delete/{userID}/{notificationID}(userID=${userID}, notificationID=${notification.notificationID})}" 
+                           onclick="return confirm('Are you sure you want to delete this notification?')">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="/users">Back to Users</a>
+    </div>
 </body>
 </html>

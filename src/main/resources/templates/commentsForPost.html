@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Comments for Post</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/formStyle.css}">
+</head>
+<body>
+    <h1>Comments for Post ID: <span th:text="${postID}"></span></h1>
+
+    <!-- Table displaying comments for the specific post -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Comment ID</th>
+                <th>Comment Text</th>
+                <th>UserID</th> <!-- Display the user who made the comment -->
+                <th>Timestamp</th> <!-- Display the comment's timestamp -->
+                <th>Actions</th> <!-- Links to view or delete comment -->
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="comment : ${comments}">
+                <td th:text="${comment.commentid}"></td>
+                <td th:text="${comment.commentText}"></td>
+                <td th:text="${comment.users.userID}"></td> <!-- Assuming 'username' is a property of Users -->
+                <td th:text="${comment.timestamp}"></td>
+                <td>
+                    <!-- Link to view the comment details -->
+                    <a th:href="@{/comments/{commentID}(commentID=${comment.commentid})}">View</a> |
+                    <!-- Link to delete the comment (assuming delete functionality exists) -->
+                    <a th:href="@{/posts/{postID}/comments/{commentID}/delete(postID=${postID}, commentID=${comment.commentid})}">Delete</a>
+
+                   
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Link to add a new comment to the current post -->
+    <p><a th:href="@{/comments/add?postID=${postID}}">Add New Comment</a></p>
+    
+    
+    
+    
+
+    <!-- Link to go back to the list of posts -->
+    <p><a href="/posts/">Back to All Comments</a></p>
+</body>
+</html>

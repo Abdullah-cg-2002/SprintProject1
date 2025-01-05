@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Message Details</title>
+    <link rel="stylesheet" type=text/css href="/styles.css">
+</head>
+<body>
+    <h1>Message Details</h1>
+    <div>
+        <p><strong>Sender:</strong> <span th:text="${message.sender.username}"></span></p>
+        <p><strong>Receiver:</strong> <span th:text="${message.receiver.username}"></span></p>
+        <p><strong>Message:</strong> <span th:text="${message.message_text}"></span></p>
+        <p><strong>Timestamp:</strong> <span th:text="${message.timestamp}"></span></p>
+        <a href="/messages">Back to Messages List</a>
+    </div>
+</body>
+</html>

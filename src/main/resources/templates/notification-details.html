@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Notification Details</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Notification Details</h1>
+        <table class="table">
+            <tr>
+                <th>Notification ID:</th>
+                <td th:text="${notification.notificationID}"></td>
+            </tr>
+            <tr>
+                <th>Content:</th>
+                <td th:text="${notification.content}"></td>
+            </tr>
+            <tr>
+                <th>Timestamp:</th>
+                <td th:text="${#temporals.format(notification.timestamp, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            </tr>
+            <tr>
+                <th>User ID:</th>
+                <td th:text="${notification.user.userID}"></td>
+            </tr>
+        </table>
+        <a th:href="@{/notifications/user/{userID}(userID=${notification.user.userID})}">Back to Notifications</a>
+    </div>
+</body>
+</html>

@@ -1,148 +1,115 @@
 package com.sprint.app.controller;
 
-
-import com.sprint.app.model.Friends;
 import com.sprint.app.model.Groups;
-import com.sprint.app.model.Messages;
 import com.sprint.app.model.Users;
-import com.sprint.app.success.SuccessResponse;
-
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-
-import com.sprint.app.services.GroupService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.sprint.app.services.GroupsService;
+import com.sprint.app.dto.GroupDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 @Controller
-@RequestMapping("/web/")
-@Validated
+@RequestMapping("/views")
 public class GroupWebController {
 
-    private static final Logger logger = LoggerFactory.getLogger(GroupWebController.class);
-
     @Autowired
-    private GroupService gs;
+    private GroupsService groupsService;
 
     /**
-     * Retrieves the list of groups associated with a specific user.
-     *
-     * @param userID the unique identifier of the user. Must be a positive integer.
-     * @return a list of Groups associated with the specified user.
+     * Displays the list of all groups using Thymeleaf template.
      */
-    @GetMapping("users/{userID}/groups")
-    public String getUserGroup(@PathVariable  int userID, Model model) {
-        logger.info("Retrieving groups for user with ID: {}", userID);
-        List<Groups> groups = gs.getUserGroup(userID);
-        logger.info("Found {} groups for user with ID: {}", groups.size(), userID);
-        model.addAttribute("groups", groups);
-        return "userGroups";
+
+
+    @GetMapping("/groups")
+    public String showGroupsList(Model model) {
+        List<Object> groupsList = groupsService.getAllGroupsData();  // Assuming you have this method
+        model.addAttribute("groups", groupsList);  // Add the list of groups to the model
+        return "groups-list";  // Thymeleaf template for the groups list
     }
 
     /**
-     * Retrieves all messages in a specific group.
+     * Displays a single group by its ID using Thymeleaf template.
      *
-     * @param groupID the unique identifier of the group. Must be a positive integer.
-     * @return a list of Messages associated with the specified group.
+     * @param groupId The ID of the group to be displayed.
      */
-    @GetMapping("groups/{groupID}/message")
-    public String getAllMessagesInGroup(@PathVariable int groupID, Model model) {
-        logger.info("Retrieving all messages for group with ID: {}", groupID);
-        List<Messages> messages = gs.getAllMessagesInGroup(groupID);
-        logger.info("Retrieved {} messages for group with ID: {}", messages.size(), groupID);
-        model.addAttribute("messages", messages);
-        return "groupMessages";
+    @GetMapping("/group/{groupId}")
+    public String getGroupById(@PathVariable int groupId, Model model) {
+        model.addAttribute("group", groupsService.getGroupDataByID(groupId));
+        return "group-view";  // Thymeleaf template for displaying group details
     }
+
+    /**
+     * Displays the form to create a new group.
+     */
+ 
+    @GetMapping("/group/add")
+    public String showCreateGroupForm(Model model) {
+        Groups group = new Groups();  // Initialize an empty GroupDTO object
+        Users admin = new Users();
+        group.setAdmin(admin);
+        model.addAttribute("group", group);  // Adding the empty groupDTO to the model
+        return "group-add";  // Thymeleaf template for the group creation form
+    }
+
+
+    /**
+     * Handles the form submission for creating a new group.
+     *
+     * @param group The group object to be created.
+     * @param bindingResult The binding result to check for validation errors.
+     */
+
+    @PostMapping("/group/added")
+    public String createGroup(@Valid @ModelAttribute("group") Groups group, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "group-add";  // Return the form with validation errors
+        }
+
+        // Convert DTO to the entity (if necessary) and then create the group
+        
+        groupsService.createNewGroup(group);  // Create the group in the database
+
+        // Optionally, you can add a success message to the model if you need to display it
+        model.addAttribute("successMessage", "Group created successfully!");
+
+        // Redirect to the groups list after successful creation
+        return "redirect:/views/groups";
+    }
+
 
     
+
     /**
-     * Adds a user as a member of a specific group.
+     * Displays the form to update an existing group.
      *
-     * @param groupID the unique identifier of the group. Must be a positive integer.
-     * @param userID  the unique identifier of the user to be added. Must be a positive integer.
-     * @return the success status and message for adding the user.
+     * @param groupId The ID of the group to be updated.
      */
-//    @PostMapping("groups/{groupID}/join/{userID}")
-//    public String addUserAsMember(@PathVariable  int groupID, @PathVariable   int userID, Model model) {
-//        logger.info("Adding user with ID: {} as member of group with ID: {}", userID, groupID);
-//        String message = gs.addUserAsMember(groupID, userID);
-//        model.addAttribute("status", "success");
-//        model.addAttribute("message", message);
-//        return "groupSuccess";
-//    }
-//
-//    /**
-//     * Sends a message to a specific group.
-//     *
-//     * @param groupID the unique identifier of the group. Must be a positive integer.
-//     * @param userID  the unique identifier of the user sending the message. Must be a positive integer.
-//     * @param message the message content to be sent.
-//     * @return the success status and message for sending the message.
-//     */
-//    @PostMapping("groups/{groupID}/messages/send/{userID}")
-//    public String sendMessageToGroup(@PathVariable @Min(1) int groupID, @PathVariable @Min(1) int userID, @RequestBody @Valid Messages message, Model model) {
-//        logger.info("Sending message to group with ID: {} from user with ID: {}", groupID, userID);
-//        Messages sentMessage = gs.sendMessageToGroup(groupID, userID, message);
-//        logger.info("Message successfully sent to group with ID: {} from user with ID: {}", groupID, userID);
-//        model.addAttribute("sentMessage", sentMessage);
-//        return "messageSent";
-//    }
-//
-//    /**
-//     * Removes a user from a specific group.
-//     *
-//     * @param groupID the unique identifier of the group. Must be a positive integer.
-//     * @param userID  the unique identifier of the user to be removed. Must be a positive integer.
-//     * @return the success status and message for removing the user from the group.
-//     */
-//    @DeleteMapping("groups/{groupID}/leave/{userID}")
-//    public String removeUserFromGroup(@PathVariable("groupID") @Min(1) int groupID, @PathVariable("userID") @Min(1) int userID, Model model) {
-//        logger.info("Removing user with ID: {} from group with ID: {}", userID, groupID);
-//        String message = gs.removeUserFromGroup(groupID, userID);
-//        model.addAttribute("status", "success");
-//        model.addAttribute("message", message);
-//        return "groupSuccess";
-//    }
-//
-//    /**
-//     * Removes a group by its ID.
-//     *
-//     * @param groupID the unique identifier of the group to be removed.
-//     * @return the success status and message for removing the group.
-//     */
-//    @DeleteMapping("groups/{groupID}")
-//    public String removeGroupById(@PathVariable @Min(1) int groupID, Model model) {
-//        logger.info("Removing group with ID: {}", groupID);
-//        String message = gs.removeGroupById(groupID);
-//        model.addAttribute("status", "success");
-//        model.addAttribute("message", message);
-//        return "deleteUser";
-//    }
-//
-//    /**
-//     * Removes a specific user from a group.
-//     *
-//     * @param groupID the unique identifier of the group. Must be a positive integer.
-//     * @param userID  the unique identifier of the user to be removed. Must be a positive integer.
-//     * @return the success status and message for removing the user from the group.
-//     */
-//    @DeleteMapping("groups/{groupID}/members/remove/{userID}")
-//    public String removeUserFromAGroup(@PathVariable("groupID") @Min(1) int groupID, @PathVariable("userID") @Min(1) int userID, Model model) {
-//        logger.info("Removing user with ID: {} from group with ID: {}", userID, groupID);
-//        String message = gs.removeUserFromAGroup(groupID, userID);
-//        model.addAttribute("status", "success");
-//        model.addAttribute("message", message);
-//        return "groupSuccess";
-//    }
+    @GetMapping("/group/edit/{groupId}")
+    public String showUpdateGroupForm(@PathVariable("groupId") int groupId, Model model) {
+        Groups group = groupsService.getGroupDataByID(groupId);
+        model.addAttribute("group", group);  // Adding the group data to the model
+        return "group-edit";  // Thymeleaf template for the group update form
+    }
+
+    /**
+     * Handles the form submission for updating a group.
+     *
+     * @param groupId The ID of the group to be updated.
+     * @param groupDTO The DTO containing the new group name.
+     */
+    
+    
+    @PostMapping("/group/update/{groupId}")
+    public String updateGroup(@PathVariable("groupId") int groupId, @ModelAttribute Groups group) {
+        groupsService.updateGroupName(group.getGroupName(), groupId);  // Update the group using a service
+        return "redirect:/views/groups";  // Redirect to groups list after updating
+    }
 
     @GetMapping("groups/{groupID}")
     public String removeGroup(@PathVariable  int groupID, Model model) {
@@ -282,9 +249,5 @@ public class GroupWebController {
         model.addAttribute("allGroups", allGroups);
         return "allGroups";
     }
-    
-   
-
-
     
 }

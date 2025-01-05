@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Group Details</title>
+<link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+
+</head>
+<body>
+    <h1>Group Details</h1>
+    <p>Group ID: <span th:text="${group.groupID}">Group ID</span></p>
+    <p>Group Name: <span th:text="${group.groupName}">Group Name</span></p>
+    <p>Admin: <span th:text="${group.admin.userID}">Admin ID</span></p>
+
+    <a href="/views/groups">Back to Groups List</a>
+</body>
+</html>

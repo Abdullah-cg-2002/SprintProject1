@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Comment</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/formStyle.css}">
+</head>
+<body>
+
+<div class="container">
+    <h2>Create a New Comment</h2>
+
+    <form action="/comments/create" method="POST" th:object="${comment}">
+        <div class="mb-3">
+            <label for="commentText" class="form-label">Comment Text</label>
+            <textarea id="commentText" class="form-control" th:field="*{commentText}" placeholder="Enter your comment..." required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="user" class="form-label">User ID</label>
+            <input type="number" class="form-control" th:field="*{users.userID}" placeholder="Enter user ID" required/>
+        </div>
+
+        <div class="mb-3">
+            <label for="post" class="form-label">Post ID</label>
+            <input type="number" class="form-control" th:field="*{post.postID}" placeholder="Enter post ID" required/>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit Comment</button>
+    </form>
+
+    <div th:if="${message != null}">
+        <div class="alert alert-success mt-3">
+            <span th:text="${message}"></span>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
