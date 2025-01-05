@@ -60,6 +60,9 @@ public class Friends {
 	public void setUser2(Users user2) {
 		this.user2 = user2;
 	}
+	public void setFriendshipID(int friendshipID) {
+		this.friendshipID=friendshipID;
+	}
 	
 	@Override
     public boolean equals(Object o) {

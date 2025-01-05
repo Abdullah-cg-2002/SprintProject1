@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Posts</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/formStyle.css}">
+</head>
+<body>
+    <h1>All Posts</h1>
+
+    <!-- Table displaying all posts -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Post ID</th>
+                <th>Content</th>
+                <th>UserID</th> <!-- Display the user who made the post -->
+                <th>Timestamp</th> <!-- Display the post's timestamp -->
+                <th>Actions</th> <!-- Links to view, edit, or delete the post -->
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="post : ${posts}">
+                <td th:text="${post.postID}"></td>
+                <td th:text="${post.content}"></td>
+                <td th:text="${post.user.userID}"></td> <!-- Assuming 'user' is a property of Post -->
+                <td th:text="${post.timestamp}"></td>
+                <td>
+                    <!-- Link to view the post details -->
+                    <a th:href="@{/views/users/{userID}/posts(userID=${post.user.userID})}">View</a> |
+                   
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <!-- Link to go back to the list of comments for a specific post -->
+    <p><a href="/comments/">Back to All Comments</a></p>
+</body>
+</html>

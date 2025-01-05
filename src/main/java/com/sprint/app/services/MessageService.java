@@ -2,6 +2,8 @@ package com.sprint.app.services;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.sprint.app.model.Messages;
 
 public interface MessageService{

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Comment</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/formStyle.css}">
+</head>
+<body>
+
+<h2>Create Comment for Post</h2>
+
+<form th:action="@{/comments/post/{postID}/create(postID=${postID})}" method="post">
+    <textarea name="commentText" rows="4" cols="50" placeholder="Enter your comment"></textarea><br>
+    <button type="submit">Submit</button>
+</form>
+
+</body>
+</html>

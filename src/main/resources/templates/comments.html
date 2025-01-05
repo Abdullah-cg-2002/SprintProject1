@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Comments</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/formStyle.css}">
+</head>
+<body>
+    <h1>Comments on User's Posts</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Comment ID</th>
+                <th>Post ID</th>
+                <th>Content</th>
+                <th>User ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="comment : ${comments}">
+                <td th:text="${comment.commentid}"></td>
+                <td th:text="${comment.post.postID}"></td>
+                <td th:text="${comment.commentText}"></td>
+                <td th:text="${comment.users.userID}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p><a href="/views">Back to Home</a></p>
+</body>
+</html>
