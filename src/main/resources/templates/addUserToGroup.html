@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add User to Group</title>
+</head>
+<body>
+    <h1>Add User to Group</h1>
+    <form th:action="@{/web/groups/{groupID}/join/user(groupID=${groupID})}" method="post">
+        <label for="userID">Enter User ID:</label>
+        <input type="number" id="userID" name="userID" required />
+        <button type="submit">Add User</button>
+    </form>
+    <a href="/web/groups">Back to All Groups</a>
+</body>
+</html>

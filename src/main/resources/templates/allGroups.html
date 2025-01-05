@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>All Groups</title>
+     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        a:active {
+            color: #333;
+        }
+
+        .action-links {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+
+</head>
+<body>
+    <h1>All Groups</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Group ID</th>
+                <th>Group Name</th>
+                <th>Admin</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="group : ${allGroups}">
+                <td th:text="${group.groupID}"></td>
+                <td th:text="${group.groupName}"></td>
+                <td th:text="${group.admin.userID}"></td>
+                <td>
+                    <!-- Corrected syntax for groupID in URL -->
+                    <a th:href="@{'/web/users/' + ${group.admin.userID} + '/groups'}">View User Groups</a> |
+                   
+                    <a th:href="@{'/web/groups/' + ${group.groupID} + '/message'}">View Messages</a> |
+                   
+                   <a th:href="@{'/web/groups/' + ${group.groupID} + '/join'}">
+                        Add User
+                    </a> |
+
+                    <!-- Delete Group -->
+                    <a th:href="@{'/web/groups/' + ${group.groupID}}" 
+                       th:onclick="'return confirm(\'Are you sure you want to delete this group?\');'" 
+                       >
+                        Delete Group
+                    </a> |
+
+                    <!-- Send Message -->
+                    <a th:href="@{'/web/groups/' + ${group.groupID} + '/messages/send'}">
+                        Send Message
+                    </a> |
+                    
+                    <!-- Remove User -->
+						<a th:href="@{'/web/groups/' + ${group.groupID} + '/members/remove/' + ${group.admin.userID}}"
+						   th:onclick="'return confirm(\'Are you sure you want to remove this user from the group?\');'" 
+						   th:method="delete">
+						    Remove User
+						</a> |
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <a href="/web/groups">Refresh</a>
+</body>
+</html>

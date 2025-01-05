@@ -225,6 +225,80 @@ public class UserWebController {
         return "pendingRequests";  // Return the view 'pendingRequests.html'
     }
 	
-	
+	/**
+     * Displays all users in a Thymeleaf template.
+     *
+     * @param model the model object to pass data to the template
+     * @return the Thymeleaf view name for displaying all users
+     */
+    @GetMapping("/getAll")
+    public String getAllUsers(Model model) {
+        model.addAttribute("users", userService.getAllUsers());
+        return "users"; // Renders users.html in the templates directory
+    }
+
+    /**
+     * Displays notifications for a specific user in a Thymeleaf template.
+     *
+     * @param userID the ID of the user whose notifications are to be displayed
+     * @param model  the model object to pass data to the template
+     * @return the Thymeleaf view name for displaying notifications
+     */
+    @GetMapping("/{userID}/notifications")
+    public String getNotificationsByUserID(@PathVariable @Min(1) int userID, Model model) {
+        try {
+            SuccessResponseGet response = userService.getNotificationByUserID(userID);
+            model.addAttribute("notifications", response.getData());
+            model.addAttribute("status", response.getStatus());
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+        }
+        return "notifications"; // Renders notifications.html in the templates directory
+    }
+    
+
+
+    /**
+     * Handles user update requests from a form.
+     *
+     * @param userID the ID of the user to update
+     * @param user   the user object with updated data
+     * @param model  the model object to pass data to the template
+     * @return the Thymeleaf view name after updating the user
+     */
+    @PostMapping("/update/{userID}")
+    public String updateUser(@PathVariable @Min(1) int userID, @Valid @ModelAttribute("user") Users user, Model model) {
+        try {
+            String message = userService.updateUser(userID, user);
+            model.addAttribute("message", message);
+            return "redirect:/users/getAll"; // Redirect to the user list page
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "update-user"; // Redirect to an error page or update form
+        }
+    }
+
+    /**
+     * Displays a form for editing a user's details.
+     *
+     * @param userID the ID of the user to edit
+     * @param model  the model object to pass data to the template
+     * @return the Thymeleaf view name for editing user details
+     */
+    @GetMapping("/edit/{userID}")
+    public String editUser(@PathVariable @Min(1) int userID, Model model) {
+        Users user = userService.getUserById(userID);
+        if (user == null) {
+            model.addAttribute("error", "User not found");
+            return "error"; // Error page
+        }
+        model.addAttribute("user", user);
+        return "edit-user"; // Renders edit-user.html in the templates directory
+    }
+    
+    @GetMapping("/{userID}/notifications/redirect")
+    public String redirectFromNotifications() {
+        return "redirect:/users/getAll";
+    }
 
 }

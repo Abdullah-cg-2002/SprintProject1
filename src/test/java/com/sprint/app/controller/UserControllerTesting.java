@@ -8,8 +8,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -186,5 +189,69 @@ public class UserControllerTesting {
            .andExpect(jsonPath("$.data[0].friendshipID").value(100002)) 
            .andExpect(jsonPath("$.data[0].status").value("PENDING")); 
    }
+
+   @Test
+    void testUpdateUser() throws Exception {
+        int userID = 1;
+        Users user = new Users();
+        user.setUsername("UpdatedUser");
+        user.setEmail("updateduser@example.com");
+        user.setPassword("newpassword");
+
+        String successMessage = "User updated successfully";
+        SuccessResponse successResponse = new SuccessResponse();
+        successResponse.setStatus("success");
+        successResponse.setMessage(successMessage);
+
+        when(userService.updateUser(eq(userID), any(Users.class))).thenReturn(successMessage);
+
+       
+        mockMvc.perform(put("/api/users/update/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(user)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.message").value(successMessage))
+                .andDo(print());
+
+        verify(userService, times(1)).updateUser(eq(userID), any(Users.class));
+    }
+
+    
+    @Test
+    void testGetNotificationByUserID() throws Exception {
+        int userID = 1;
+
+        SuccessResponseGet successResponseGet = new SuccessResponseGet();
+        successResponseGet.setStatus("success");
+
+        // Create mock notifications as Map
+        List<Object> notifications = new ArrayList<>();
+        Map<String, String> notification1 = new HashMap<>();
+        notification1.put("title", "Notification 1");
+        notification1.put("message", "This is the first notification");
+        notifications.add(notification1);
+
+        Map<String, String> notification2 = new HashMap<>();
+        notification2.put("title", "Notification 2");
+        notification2.put("message", "This is the second notification");
+        notifications.add(notification2);
+
+        successResponseGet.setData(notifications);
+
+        when(userService.getNotificationByUserID(userID)).thenReturn(successResponseGet);
+
+        mockMvc.perform(get("/api/users/1/notification"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data[0].title").value("Notification 1"))
+                .andExpect(jsonPath("$.data[0].message").value("This is the first notification"))
+                .andExpect(jsonPath("$.data[1].title").value("Notification 2"))
+                .andExpect(jsonPath("$.data[1].message").value("This is the second notification"))
+                .andDo(print());
+
+        verify(userService, times(1)).getNotificationByUserID(userID);
+    }
 
 }

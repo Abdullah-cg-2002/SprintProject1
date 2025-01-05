@@ -28,6 +28,8 @@
                     <td th:text="${user.email}"></td>
                     <td>
                         <a th:href="@{/users/{userID}(userID=${user.userID})}">View</a>
+                        <a th:href="@{/users/{id}/notifications(id=${user.userID})}">View Notifications</a>
+                        <a th:href="@{/users/edit/{id}(id=${user.userID})}">Edit</a>
                         <a th:href="@{/users/{userID}/groups(userID=${user.userID})}">Groups</a>
                         <a th:href="@{/users/delete/{userID}(userID=${user.userID})}" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
                     </td>

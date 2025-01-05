@@ -16,6 +16,7 @@ import com.sprint.app.exception.UserException;
 import com.sprint.app.model.Groups;
 import com.sprint.app.model.Likes;
 import com.sprint.app.model.Messages;
+import com.sprint.app.model.Notifications;
 import com.sprint.app.model.Posts;
 import com.sprint.app.model.Users;
 import com.sprint.app.repo.LikeRepo;
@@ -374,6 +375,55 @@ public class UserServiceImpl implements UserService
         logger.warn("User with ID: {} not found.", userID);
         throw new UserNotFoundException("User not found with ID: " + userID);
     }
+
+	public String updateUser(int userID, Users user) {
+		logger.info("Starting update for user with ID: {}", userID);
+		
+	   List<Users> existingUserByMail = ur.findByEmail(user.getEmail());
+	   List<Users> existingUserByName = ur.findByUsername(user.getUsername());
+	   
+	   if(!existingUserByName.isEmpty() && existingUserByName.get(0).getUserID()!=userID) {
+		   logger.error("Email already exists for user with ID: {}", userID);
+		   throw new UserException("Email already exists");
+	   }
+	   if(!existingUserByMail.isEmpty() && existingUserByMail.get(0).getUserID() !=userID) {
+		   logger.error("Username already exists for user with ID: {}", userID);
+		   throw new UserException("Username already exists");
+	   }
+	   
+	   Users u1 = ur.findById(userID).get();
+	   u1.setUsername(user.getUsername());
+	   u1.setEmail(user.getEmail());
+	   u1.setPassword(user.getPassword());
+	   ur.save(u1);
+	   
+	   logger.info("User with ID: {} successfully updated", userID);
+	   return "User updated successfully";
+   }
+   
+
+   /**
+	* Retrieves notifications for a specific user.
+	*
+	* @param userID the unique identifier of the user whose notifications are to be retrieved. Must be a positive integer.
+	* @return a SuccessResponseGet object containing the status and list of notifications for the specified user.
+	* @throws RuntimeException if no notifications are found for the given user ID.
+	*/
+   @Override
+   public SuccessResponseGet getNotificationByUserID(int userID) {
+	   logger.info("Retrieving notifications for user with ID: {}", userID);
+	   Users u2 = ur.findById(userID).get();
+	   List<Notifications> notification = u2.getNotification();
+	   if(notification.isEmpty()) {
+		   logger.error("No notifications found for user with ID: {}", userID);
+		   throw new UserException("Notification not found for the given user ID");
+	   }
+	   SuccessResponseGet response = new SuccessResponseGet();
+	   response.setStatus("success");
+	   response.setData(new ArrayList<>(notification));  
+	   logger.info("Successfully retrieved notifications for user with ID: {}", userID);
+	   return response;
+   }
 	
 
 }

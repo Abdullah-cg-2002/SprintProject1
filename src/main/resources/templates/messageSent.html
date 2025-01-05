@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Send Message to Group</title>
+</head>
+<body>
+    <h1>Send Message to Group</h1>
+    <form th:action="@{/web/groups/{groupID}/messages/send/userID(groupID=${groupID})}" method="post">
+    <label for="message_text}">Message Content:</label>
+    <textarea id="message_text}" name="message_text}" required></textarea>
+    <label for="userID">Enter User ID:</label>
+        <input type="number" id="userID" name="userID" required />
+    <!-- Hidden input for userID -->
+    <input type="hidden" name="userID" value="1"/> <!-- Replace 1 with the actual userID -->
+
+    <button type="submit">Send Message</button>
+</form>
+   <a href="/web/groups">Back to All Groups</a>
+</body>
+</html>

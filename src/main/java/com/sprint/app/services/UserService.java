@@ -23,8 +23,10 @@ public interface UserService
 	public List<Groups> getAllGroupsofUser(int userID);
 	public void addLikeToPost(int postId, int userId);
 	public void removeLikeFromPost(int postId, int userId);
-  public List<Object> getPendingFrndReq(int userID);
-  public List<Posts> getAllPostsUsr(int userID);
-  public List<Comments> getAllCmtsPst(int userID);
-
+  	public List<Object> getPendingFrndReq(int userID);
+  	public List<Posts> getAllPostsUsr(int userID);
+  	public List<Comments> getAllCmtsPst(int userID);
+	String updateUser(int userID, Users user);
+	SuccessResponseGet getNotificationByUserID(int userID);
+	Users getUserById(int userID);
 }

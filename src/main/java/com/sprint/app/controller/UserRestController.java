@@ -269,12 +269,7 @@ public class UserRestController {
 		}
 	}
 
-	
-	@GetMapping("users/{userID}/posts/likes")
-	public List<Likes> getAllLikes(@PathVariable int userID)
-	{
-		return us.getAllLikesPst(userID);
-	}
+
 		 /**
 	  * Fetches all posts created by a specific user based on the provided user ID.
 	  * 
@@ -355,6 +350,41 @@ public class UserRestController {
 		return srg;
 		
 		
+	}
+	
+	/**
+     * Updates the information of a user.
+     *
+     * @param userID the unique identifier of the user to be updated. Must be a positive integer.
+     * @param user   the user object containing updated information. Must be valid according to the defined constraints.
+     * @return a SuccessResponse object containing the status and message of the update operation.
+     */
+	@PutMapping("users/update/{userID}")
+	public SuccessResponse updateUser(@PathVariable @Min(1) int userID, @RequestBody @Valid Users user) {
+		logger.info("Received update request for user with ID: {}", userID);
+		String message = us.updateUser(userID, user);
+		
+		logger.info("User with ID {} updated successfully. Message: {}", userID, message);
+		SuccessResponse sr = new SuccessResponse();
+		sr.setStatus("success");
+		sr.setMessage(message);
+		
+		return sr;
+		
+	}
+	
+	 /**
+     * Retrieves notifications for a specific user.
+     *
+     * @param userID the unique identifier of the user whose notifications are to be retrieved. Must be a positive integer.
+     * @return a SuccessResponseGet object containing the notifications for the specified user.
+     */
+	@GetMapping("users/{userID}/notification")
+	public SuccessResponseGet getNotificationByUserID(@PathVariable @Min(1) int userID){
+		logger.info("Retrieving notifications for user with ID: {}", userID);
+		SuccessResponseGet response= us.getNotificationByUserID(userID);
+		logger.info("Successfully retrieved notifications for user with ID: {}", userID);
+		return response;
 	}
 	
 	

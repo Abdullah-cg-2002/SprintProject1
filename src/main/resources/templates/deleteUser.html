@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Confirm Remove User</title>
+</head>
+<body>
+    <h1>Confirm Remove User</h1>
+    <p>Are you sure you want to remove user with ID <span th:text="${userID}"></span> from group with ID <span th:text="${groupID}"></span>?</p>
+    
+    <!-- Corrected form action URL -->
+    <form th:action="@{/web/groups/{groupID}/members/remove/{userID}(groupID=${groupID}, userID=${userID})}" method="post">
+        <input type="hidden" name="_method" value="post" />
+        <button type="submit">Yes, Remove User</button>
+    </form>
+    
+    <a href="/web/groups">Back to All Groups</a>
+</body>
+</html>

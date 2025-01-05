@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Delete Group</title>
+</head>
+<body>
+    <h1>Are you sure you want to delete this group?</h1>
+    <p>Group ID: <span th:text="${groupID}"></span></p>
+    
+    <form th:action="@{/web/groups/{groupID}(groupID=${groupID})}" method="post" 
+          th:onsubmit="return confirm('Are you sure you want to delete this group?');">
+        <button type="submit">Yes, Delete Group</button>
+    </form>
+    
+    <a href="/web/groups">Cancel</a>
+</body>
+</html>
