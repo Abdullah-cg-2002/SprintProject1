@@ -2,25 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Message Form</title>
+    <title>Update Message</title>
+    <link rel="stylesheet" type=text/css href="/styles.css">
 </head>
 <body>
-
-<h2>Update Message</h2>
-
-<form th:action="@{/message/updated}" th:object="${message}" method="post">
-    <div>
-        MessageId : <input type="number" name="messageID">
-    </div>
-    <div>
+    <h1>Update Message</h1>
+    <form th:action="@{'/messages/' + ${message.messageID}}" th:object="${message}"  method="post">
+        <div>
         <label for="message_text">Message Text:</label>
         <textarea th:field="*{message_text}"></textarea>
     </div>
-    <div>
-        <button type="submit">Update Message</button>
-    </div>
-</form>
-
-
+        <div>
+            <button type="submit">Update Message</button>
+        </div>
+    </form>
+    <a href="/messages">Back to Messages List</a>
 </body>
 </html>
