@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.sprint.app.dto.MessageDTO;
 import com.sprint.app.model.Messages;
@@ -22,72 +21,61 @@ public class MessageWebController {
 	@Autowired
 	private MessageService ms;
 	
-	//create message
-	@GetMapping("/message/send")
-	public String formMsg(Model m)
-	{
-		Users sender = new Users();
-		Users receiver = new Users();
-		MessageDTO mdto = new MessageDTO();
-		mdto.setReceiver(sender);
-		mdto.setSender(receiver);
-		m.addAttribute("message", mdto);
-		return "formMessage";
-	}
-	
-	@PostMapping("/message/sent")
-	public String sentMsg(@ModelAttribute MessageDTO mdto)
-	{
-		ms.createMsg(mdto);
-		return "redirect:/message/send";
-	}
-	
-	//get all message
 	@GetMapping("/messages")
-	public String getAllMsgs(Model m)
-	{
-		List<Messages> messages = List.copyOf(ms.getAllMsgs());
-		m.addAttribute("messages", messages);
-		return "displayMessage";
-	}
-	
-	//get specific message
-	@GetMapping("/messages/{messageID}")
-	public String getSpecificMsg(@PathVariable int messageID, Model  m)
-	{
-		Messages messages = ms.getSpecificMsg(messageID);
-		m.addAttribute("messages", messages);
-		return "displayMessage";
-	}
-	
-	//update method
-	@GetMapping("/messages/update")
-	public String updateSpecificMsg(Model m)
-	{
-		Messages message = new Messages();
-		m.addAttribute("message", message);
-		return "updateMessage";
-	}
-	
-	@PostMapping("/message/updated")
-	public String updatedMsg(@RequestParam int messageID, @ModelAttribute Messages message, Model m)
-	{
-		ms.updateMsg(messageID, message);
-		return "redirect:/messages";
-	}
-	
-	//delete message
-	@GetMapping("/message/delete")
-	public String deleteMsg(Model m)
-	{
-		return "deleteMessage";
-	}
-	
-	@PostMapping("/message/deleted")
-	public String deletedMsg(@RequestParam int messageID)
-	{
-		ms.deleteMsg(messageID);
-		return "redirect:/messages";
-	}
+    public String getAllMessages(Model model) {
+        List<Messages> messages = ms.getAllMsgs();
+        model.addAttribute("messages", messages);
+        return "messages";
+    }
+
+    @GetMapping("/messages/{messageID}")
+    public String getSpecificMessage(@PathVariable int messageID, Model model) {
+        Messages message = ms.getSpecificMsg(messageID);
+        model.addAttribute("message", message);
+        return "displayMessage";
+    }
+
+    @GetMapping("/messages/create")
+    public String createMessageForm(Model model) {
+    	MessageDTO msgDto = new MessageDTO();
+    	Users sender = new Users();
+    	Users receiver = new Users();
+    	msgDto.setReceiver(receiver);
+    	msgDto.setSender(sender);
+    	model.addAttribute("messageDto", msgDto);
+        return "formMessage";
+    }
+
+    @PostMapping("/messages")
+    public String createMessage(@ModelAttribute MessageDTO msgdto) {
+        ms.createMsg(msgdto);
+        return "redirect:/messages";
+    }
+
+    @GetMapping("/messages/update/{messageID}")
+    public String updateMessageForm(@PathVariable int messageID, Model model) {
+        Messages message = ms.getSpecificMsg(messageID);
+        model.addAttribute("message", message);
+        return "updateMessage";
+    }
+
+    @PostMapping("/messages/{messageID}")
+    public String updateMessage(@PathVariable int messageID, @ModelAttribute Messages msg) {
+        ms.updateMsg(messageID, msg);
+        return "redirect:/messages";
+    }
+
+    @GetMapping("/messages/delete/{messageID}")
+    public String deleteMessageForm(@PathVariable int messageID, Model model) {
+        Messages message = ms.getSpecificMsg(messageID);
+        model.addAttribute("message", message);
+        return "deleteMessage";
+    }
+
+    @PostMapping("/messages/delete/{messageID}")
+    public String deleteMessage(@PathVariable int messageID) {
+        ms.deleteMsg(messageID);
+        return "redirect:/messages";
+    }
 
 }
