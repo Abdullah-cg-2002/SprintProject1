@@ -4,6 +4,7 @@ import java.util.List;
 import com.sprint.app.dto.MessageDTO;
 import com.sprint.app.model.Likes;
 import com.sprint.app.model.Messages;
+import com.sprint.app.model.Posts;
 import com.sprint.app.model.Users;
 
 public interface UserService
@@ -22,5 +23,8 @@ public interface UserService
 	public List<Groups> getAllGroupsofUser(int userID);
 	public void addLikeToPost(int postId, int userId);
 	public void removeLikeFromPost(int postId, int userId);
+  public List<Object> getPendingFrndReq(int userID);
+  public List<Posts> getAllPostsUsr(int userID);
+  public List<Comments> getAllCmtsPst(int userID);
 
 }

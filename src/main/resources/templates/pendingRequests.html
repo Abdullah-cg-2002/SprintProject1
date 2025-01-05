@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Pending Friend Requests</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/formStyle.css}">
+</head>
+<body>
+    <h1>Pending Friend Requests</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Request ID</th>
+                <th>Sent By User ID</th>
+                <th>Received By User ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="friend : ${pendingRequests}">
+                <td th:text="${friend.friendshipID}"></td>
+                <td th:text="${friend.user1.userID}"></td>
+                <td th:text="${friend.user2.userID}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p><a href="/views">Back to Home</a></p>
+</body>
+</html>

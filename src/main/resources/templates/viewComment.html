@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Comment Details</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/formStyle.css}">
+</head>
+<body>
+    <h1>Comment Details</h1>
+
+    <!-- Display the comment's ID -->
+    <p><strong>Comment ID:</strong> <span th:text="${comment.commentid}"></span></p>
+
+    <!-- Display the comment's text -->
+    <p><strong>Comment Text:</strong> <span th:text="${comment.commentText}"></span></p>
+
+    <!-- Display the associated post's title -->
+    <p><strong>Post ID:</strong> <span th:text="${comment.post.postID}"></span></p> <!-- Assuming 'title' is a property of Post -->
+
+    <!-- Display the user who made the comment -->
+    <p><strong>User ID:</strong> <span th:text="${comment.users.userID}"></span></p> <!-- Assuming 'username' is a property of Users -->
+
+    <!-- Display the timestamp of the comment -->
+    <p><strong>Timestamp:</strong> <span th:text="${comment.timestamp}"></span></p>
+
+    <!-- Action links for editing or deleting the comment -->
+    <p>
+        <a th:href="@{/comments/edit/{commentID}(commentID=${comment.commentid})}">Edit Comment</a> |
+        <a th:href="@{/comments/delete/{commentID}(commentID=${comment.commentid})}">Delete Comment</a>
+    </p>
+
+    <!-- Link to go back to the comments list -->
+    <p><a href="/comments/">Back to All Comments</a></p>
+</body>
+</html>

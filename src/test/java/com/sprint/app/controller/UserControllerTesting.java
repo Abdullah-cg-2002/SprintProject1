@@ -8,7 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDateTime;
 import java.util.List;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sprint.app.dto.MessageDTO;
 import com.sprint.app.model.Likes;
 import com.sprint.app.model.Messages;
+import com.sprint.app.model.Posts;
 import com.sprint.app.model.Users;
 import com.sprint.app.services.UserService;
 
@@ -124,5 +125,66 @@ public class UserControllerTesting {
 		.andExpect(jsonPath("$.message").value("friend request sent successfully"));
 			
 	}
+
+	 @Test
+    public void testGetPostsByUser() throws Exception {
+        Posts post1 = new Posts();
+        post1.setPostID(101);
+        post1.setContent("Post content by user1");
+
+        List<Posts> posts = Arrays.asList(post1);
+        when(userv.getAllPostsUsr(userID)).thenReturn(posts);
+
+        mvc.perform(get("/api/users/1/posts", 1)) 
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.size()").value(2)) 
+            .andExpect(jsonPath("$.data[0].postID").value(101))
+            .andExpect(jsonPath("$.data[0].content").value("Post content by user1"));
+        
+       
+    }
+
+    
+    @Test
+    void testGetAllCommentsOnPost() throws Exception {
+        Comments comment1 = new Comments();
+        comment1.setCommentid(1002);
+        comment1.setCommentText("Comment by user2 on user2's post");
+
+        List<Comments> comments = Arrays.asList(comment1);
+        when(userv.getAllCmtsPst(userID)).thenReturn(comments);
+
+        mvc.perform(get("/api/users/2/posts/comments", 2)) 
+            
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.size()").value(2)) 
+            .andExpect(jsonPath("$.data[0].commentid").value(1002))
+            .andExpect(jsonPath("$.data[0].commentText").value("updated comment for the postID 102"));
+    }
+
+   @Test
+  
+   void testGetPendingReq() throws Exception {
+       Users user1 = new Users();
+       user1.setUserID(2);
+
+       Friends friend1 = new Friends();
+       friend1.setFriendshipID(100002);
+       friend1.setStatus(Status.PENDING);
+       friend1.setUser1(user1);
+       friend1.setUser2(new Users());
+
+       List<Object> pendingReq = new ArrayList<>();
+       pendingReq.add(friend1);
+
+       int userID = 3;
+       when(userv.getPendingFrndReq(userID)).thenReturn(pendingReq);
+
+       mvc.perform(get("/api/users/2/friend-requests/pending", 2)) 
+           .andDo(print())
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.data[0].friendshipID").value(100002)) 
+           .andExpect(jsonPath("$.data[0].status").value("PENDING")); 
+   }
 
 }

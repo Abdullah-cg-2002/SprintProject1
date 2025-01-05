@@ -30,6 +30,21 @@ public class UserServiceTesting {
     @Autowired
     private UserServiceImpl userServiceImpl; // The service you are testing
 
+    @BeforeEach
+    void setUp() {
+        // Setup user and post for tests
+        user = new Users();
+        user.setUserID(1);
+        user.setUsername("user1");
+        userRepo.save(user);
+
+        post = new Posts();
+        post.setPostID(101);
+        post.setUser(user);
+        post.setContent("Post content by user1");
+        postRepo.save(post);
+    }
+
     @Test
     void testAddLikeToPost() {
         // Set up the Post and User for this test
