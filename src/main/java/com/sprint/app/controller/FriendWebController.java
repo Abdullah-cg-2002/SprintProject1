@@ -42,28 +42,31 @@ public class FriendWebController {
         return "redirect:/friends/" + userID;
     }
 	
-	//get msgs between 2 friends
-	@GetMapping("/friends/{friendshipID}/messages")
-	public String getFrndsMsgs(@PathVariable int friendshipID, Model m)
-	{
-		List<Messages> messages = friendService.getAllMsgBtwFrnds(friendshipID);
-		m.addAttribute("messages", messages);
-		return "displayMessage";
-	}
-	
-	//post a message to a friend
-	@GetMapping("/friends/message/send")
-	public String sendMsgToFriend(Model m)
-	{
-		MessageDTO messageDto = new MessageDTO();
-		m.addAttribute("messageDto", messageDto);
-		return "sendMsgFriend";
-	}
-	
-	@PostMapping("/friends/message/sent")
-	public String sentMsgToFriend(@RequestParam int friendshipID, @ModelAttribute MessageDTO messageDto)
-	{
-		friendService.sendMsg(friendshipID, messageDto);
-		return "redirect:/friends/message/send";
-	}
+    @GetMapping("/{userID}/messages/{friendshipID}")
+    public String getMessages(@PathVariable int friendshipID, Model model) {
+        // Fetch the messages between the two friends using friendshipID
+        List<Messages> messages = friendService.getAllMsgBtwFrnds(friendshipID); // Call the service method to fetch messages
+        model.addAttribute("messages", messages);  // Pass messages to the Thymeleaf template
+        return "messages";  // Return the Thymeleaf view name to show the messages
+    }
+
+    // Send a new message between two friends
+    @GetMapping("/{userID}/messages/{friendshipID}/send")
+    public String sendMessageForm(@PathVariable int userID, @PathVariable int friendshipID, Model model) {
+    	model.addAttribute("userID", userID);
+        model.addAttribute("friendshipID", friendshipID);
+        return "sendMsgFriend"; // This will show the form to send a message
+    }
+    
+    @PostMapping("/{userID}/messages/{friendshipID}/sent")
+    public String sendMessage(@PathVariable int userID, @PathVariable int friendshipID, 
+                              @RequestParam String messageContent, Model model) {
+        // Call the service method to save the new message for the friendshipID
+    	MessageDTO messageDto = new MessageDTO();
+    	messageDto.setMessage_text(messageContent);
+        friendService.sendMsg(friendshipID, messageDto);
+   
+        // Redirect to the message list page after sending the message
+        return "redirect:/friends/{userID}/messages/{friendshipID}";
+    }
 }
