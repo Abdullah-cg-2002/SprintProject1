@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Messages</title>
+    <link rel="stylesheet" type=text/css href="/styles.css">
+</head>
+<body>
+    <h1>Messages List</h1>
+    <div>
+        <a href="/messages/create">Create New Message</a>
+    </div>
+    <div th:if="${status != 'success'}">
+        <p th:text="${message}"></p>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Sender</th>
+                <th>Receiver</th>
+                <th>Message</th>
+                <th>Timestamp</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="message : ${messages}">
+                <td th:text="${message.sender.username}"></td>
+                <td th:text="${message.receiver.username}"></td>
+                <td th:text="${message.message_text}"></td>
+                <td th:text="${message.timestamp}"></td>
+                <td>
+                    <a th:href="@{'/messages/' + ${message.messageID}}">View</a> | 
+                    <a th:href="@{'/messages/update/' + ${message.messageID}}">Edit</a> | 
+                    <a th:href="@{'/messages/delete/' + ${message.messageID}}">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
