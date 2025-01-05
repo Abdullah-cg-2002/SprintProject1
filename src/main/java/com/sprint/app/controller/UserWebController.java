@@ -121,17 +121,16 @@ public class UserWebController {
      * @return The "users" template with search results.
      */
     @GetMapping("/search")
-    public String searchUsers(@RequestParam("username") String username, Model model) {
+    public String searchUsers(@RequestParam String username, Model model) {
         logger.info("Searching for users with username: " + username);
         List<Users> users = userService.searchForUserByName(username);
         model.addAttribute("users", users); 
         logger.info("Search results added to model");
         return "users"; 
     }
-
 	
 	//send msg to frnd
-	@GetMapping("/user/send/message/friend")
+	@GetMapping("/send/message/friend")
 	public String getDetailsForSendMsg(Model m)
 	{
 		MessageDTO messageDto = new MessageDTO();
@@ -139,29 +138,29 @@ public class UserWebController {
 		return "formSendMessage";
 	}
 	
-	@PostMapping("/user/send/message/post")
+	@PostMapping("/send/message/post")
 	public String sendMsgToOtherUser(@RequestParam int userID, @RequestParam int frdID, @ModelAttribute MessageDTO messageDto)
 	{
 		userService.sendMsgFrnd(userID, frdID, messageDto);
-		return "redirect:/user/send/message/friend";
+		return "redirect:/users/send/message/friend";
 	}
 	
 	//send friend request
-	@GetMapping("/user/send/friend-req")
+	@GetMapping("/send/friend-req")
 	public String sendFrndReq(Model m)
 	{
 		return "sendFrndReq";
 	}
 	
-	@PostMapping("/user/sent/friend-req")
+	@PostMapping("/sent/friend-req")
 	public String frndReqSent(@RequestParam int userID, @RequestParam int frdID)
 	{
 		userService.sendFrdReq(userID, frdID);
-		return "redirect:/user/send/friend-req";
+		return "redirect:/users/send/friend-req";
 	}
 	
 	//get msgs between users
-	@GetMapping("/users/{userID}/messages/{otherID}")
+	@GetMapping("/{userID}/messages/{otherID}")
 	public String msgsBtwnUsers(@PathVariable int userID, @PathVariable int otherID, Model m)
 	{
 		List<Messages> messages = userService.msgBtwUsers(userID, otherID);
@@ -170,7 +169,7 @@ public class UserWebController {
 	}
 	
 	//get all likes for a user
-	@GetMapping("/users/{userID}/posts/likes")
+	@GetMapping("/{userID}/posts/likes")
 	public String getAllLikesUserGot(@PathVariable int userID, Model m)
 	{
 		List<Likes> likes = userService.getAllLikesPst(userID);
@@ -179,7 +178,7 @@ public class UserWebController {
 	}
 	
 	//get all likes user likes
-	@GetMapping("/users/{userID}/likes")
+	@GetMapping("/{userID}/likes")
 	public String getAllLikesByUser(@PathVariable int userID, Model m)
 	{
 		List<Likes> likes = userService.getAllLikesUsr(userID);
